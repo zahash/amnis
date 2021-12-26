@@ -73,3 +73,9 @@ class Stream:
 
     def anymatch(self, fn: Callable[[Any], bool]):
         return any(fn(item) for item in self._iterable)
+
+    def count(self):
+        size = 0
+        for _ in self._iterable:
+            size += 1
+        return size

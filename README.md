@@ -51,6 +51,17 @@ result = Stream([1, 2, 3]) \
 # 30
 ```
 
+```Python
+from pystream import Stream
+
+result = Stream([1, 2, 3]) \
+    .filter(lambda x: x > 1) \
+    .map(lambda x: x * 2) \
+    .reduce(lambda x, y: x + y, initial=20)
+
+# 30
+```
+
 first
 
 ```Python

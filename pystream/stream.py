@@ -30,6 +30,19 @@ class Stream:
     def takewhile(self, fn: Callable[[Any], bool]) -> "Stream":
         return self.apply(partial(self._takewhile, fn=fn))
 
+    def dropwhile(self, fn: Callable[[Any], bool]) -> "Stream":
+        return self.apply(partial(self._dropwhile, fn=fn))
+
+    @staticmethod
+    def _dropwhile(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
+        start_allowing = False
+        for item in iterable:
+            if not fn(item):
+                start_allowing = True
+
+            if start_allowing:
+                yield item
+
     @staticmethod
     def _takewhile(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
         for item in iterable:

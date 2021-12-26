@@ -27,6 +27,15 @@ class Stream:
     def limit(self, n: int) -> "Stream":
         return self.apply(partial(self._limit, n=n))
 
+    def takewhile(self, fn: Callable[[Any], bool]) -> "Stream":
+        return self.apply(partial(self._takewhile, fn=fn))
+
+    @staticmethod
+    def _takewhile(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
+        for item in iterable:
+            if not fn(item): break
+            yield item
+
     @staticmethod
     def _limit(iterable: Iterable, n: int) -> Iterable:
         for item in iterable:

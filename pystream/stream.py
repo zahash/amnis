@@ -67,3 +67,6 @@ class Stream:
             if return_val:
                 d[key] = return_val
         return dict(d)
+
+    def allmatch(self, fn: Callable[[Any], bool]):
+        return all(fn(item) for item in self._iterable)

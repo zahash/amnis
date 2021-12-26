@@ -171,3 +171,15 @@ class TestStream(unittest.TestCase):
             .reduce(operator.add)
 
         self.assertEqual(15, result)
+
+    def test_allmatch_true(self):
+        result = Stream(["cat", "fat", "rat"]) \
+            .allmatch(lambda x: "at" in x)
+
+        self.assertTrue(result)
+
+    def test_allmatch_false(self):
+        result = Stream(["cat", "dog", "rat"]) \
+            .allmatch(lambda x: "at" in x)
+
+        self.assertFalse(result)

@@ -70,3 +70,6 @@ class Stream:
 
     def allmatch(self, fn: Callable[[Any], bool]):
         return all(fn(item) for item in self._iterable)
+
+    def anymatch(self, fn: Callable[[Any], bool]):
+        return any(fn(item) for item in self._iterable)

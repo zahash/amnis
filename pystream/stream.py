@@ -68,13 +68,13 @@ class Stream:
                 d[key] = return_val
         return dict(d)
 
-    def allmatch(self, fn: Callable[[Any], bool]):
+    def allmatch(self, fn: Callable[[Any], bool]) -> bool:
         return all(fn(item) for item in self._iterable)
 
-    def anymatch(self, fn: Callable[[Any], bool]):
+    def anymatch(self, fn: Callable[[Any], bool]) -> bool:
         return any(fn(item) for item in self._iterable)
 
-    def count(self):
+    def count(self) -> int:
         size = 0
         for _ in self._iterable:
             size += 1

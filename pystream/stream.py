@@ -37,7 +37,7 @@ class Stream:
         return self.apply(partial(self._dropwhile, fn=fn))
 
     @staticmethod
-    def _catch(iterable: Iterable, handler: Callable[["Exception"], Any]) -> Iterable:
+    def _catch(iterable: Iterable, handler: Callable[["Exception"], None]) -> Iterable:
         it = iter(iterable)
         while True:
             try:

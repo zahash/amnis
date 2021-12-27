@@ -397,7 +397,7 @@ class TestStream(unittest.TestCase):
             raise ValueError(x)
 
         def err_handler(err):
-            value = err.args[0]
+            (value,) = err.args
             return value + 10
 
         result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \

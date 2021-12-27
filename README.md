@@ -52,6 +52,44 @@ def err_fn_2(x):
         raise KeyError(x)
     return x
 
+err_messages = []
+
+def err_handler(err):
+    err_messages.append(f"encountered {type(err).__name__} with the value {err.args}")
+
+result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
+    .map(err_fn_1) \
+    .map(err_fn_2) \
+    .filter(lambda x: x % 2 == 0) \
+    .catch(err_handler) \
+    .collect(list)
+
+# result = [8, 10]
+# err_messages_1 = [
+#       "encountered ValueError with the value (1,)", 
+#       "encountered ValueError with the value (2,)", 
+#       "encountered ValueError with the value (3,)",
+#       "encountered KeyError with the value (4,)", 
+#       "encountered KeyError with the value (5,)", 
+#       "encountered KeyError with the value (6,)"
+# ]
+```
+
+error handling at granular level
+
+```Python
+from pystream import Stream
+
+def err_fn_1(x):
+    if x <= 3:
+        raise ValueError(x)
+    return x
+
+def err_fn_2(x):
+    if 2 <= x <= 6:
+        raise KeyError(x)
+    return x
+
 err_messages_1 = []
 err_messages_2 = []
 

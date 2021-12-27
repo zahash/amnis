@@ -344,3 +344,48 @@ class TestStream(unittest.TestCase):
             self.assertTrue("ValueError" in msg)
 
         self.assertListEqual([2, 4, 6], result)
+
+    def test_multiple_catch(self):
+        def err_fn_1(x):
+            if x <= 3:
+                raise ValueError(x)
+            return x
+
+        def err_fn_2(x):
+            if 2 <= x <= 6:
+                raise KeyError(x)
+            return x
+
+        err_messages_1 = []
+        err_messages_2 = []
+
+        def err_handler_1(err):
+            err_messages_1.append(f"encountered {type(err).__name__} with the value {err.args}")
+
+        def err_handler_2(err):
+            err_messages_2.append(f"encountered {type(err).__name__} with the value {err.args}")
+
+        result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
+            .map(err_fn_1) \
+            .catch(err_handler_1) \
+            .map(err_fn_2) \
+            .filter(lambda x: x % 2 == 0) \
+            .catch(err_handler_2) \
+            .collect(list)
+
+        self.assertEqual(3, len(err_messages_1))
+        self.assertTrue("1" in err_messages_1[0])
+        self.assertTrue("2" in err_messages_1[1])
+        self.assertTrue("3" in err_messages_1[2])
+
+        self.assertEqual(3, len(err_messages_2))
+        self.assertTrue("4" in err_messages_2[0])
+        self.assertTrue("5" in err_messages_2[1])
+        self.assertTrue("6" in err_messages_2[2])
+
+        for msg in err_messages_1:
+            self.assertTrue("ValueError" in msg)
+        for msg in err_messages_2:
+            self.assertTrue("KeyError" in msg)
+
+        self.assertListEqual([8, 10], result)

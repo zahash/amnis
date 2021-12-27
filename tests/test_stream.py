@@ -389,3 +389,21 @@ class TestStream(unittest.TestCase):
             self.assertTrue("KeyError" in msg)
 
         self.assertListEqual([8, 10], result)
+
+    def test_error_with_return_val(self):
+        def err_fn(x):
+            if x <= 6:
+                return x
+            raise ValueError(x)
+
+        def err_handler(err):
+            value = err.args[0]
+            return value + 10
+
+        result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
+            .map(err_fn) \
+            .catch(err_handler) \
+            .filter(lambda x: x % 2 == 0) \
+            .collect(list)
+
+        self.assertListEqual([2, 4, 6, 18, 20], result)

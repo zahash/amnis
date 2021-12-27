@@ -46,7 +46,9 @@ class Stream:
             except StopIteration:
                 break
             except Exception as ex:
-                handler(ex)
+                return_val = handler(ex)
+                if return_val:
+                    yield return_val
 
     @staticmethod
     def _dropwhile(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:

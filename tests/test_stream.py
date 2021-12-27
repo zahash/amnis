@@ -299,3 +299,48 @@ class TestStream(unittest.TestCase):
             .collect(list)
 
         self.assertListEqual([4, 5, 6, 7, 8, 9], result)
+
+    def test_error_empty(self):
+        def err_fn(x):
+            if x <= 3:
+                return x
+            raise ValueError(x)
+
+        err_messages = []
+
+        def err_handler(err):
+            err_messages.append(f"encountered {type(err).__name__} with the value {err.args}")
+
+        Stream([]) \
+            .map(err_fn) \
+            .catch(err_handler) \
+            .collect(list)
+
+        self.assertListEqual([], err_messages)
+
+    def test_error(self):
+        def err_fn(x):
+            if x <= 6:
+                return x
+            raise ValueError(x)
+
+        err_messages = []
+
+        def err_handler(err):
+            err_messages.append(f"encountered {type(err).__name__} with the value {err.args}")
+
+        result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
+            .map(err_fn) \
+            .catch(err_handler) \
+            .filter(lambda x: x % 2 == 0) \
+            .collect(list)
+
+        self.assertEqual(4, len(err_messages))
+        self.assertTrue("7" in err_messages[0])
+        self.assertTrue("8" in err_messages[1])
+        self.assertTrue("9" in err_messages[2])
+        self.assertTrue("10" in err_messages[3])
+        for msg in err_messages:
+            self.assertTrue("ValueError" in msg)
+
+        self.assertListEqual([2, 4, 6], result)

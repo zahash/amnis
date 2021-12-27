@@ -12,6 +12,21 @@ class Stream:
     def apply(self, fn: Callable[[Iterable], Iterable]) -> "Stream":
         return Stream(fn(self._iterable))
 
+    def catch(self, handler: Callable[[Any], Any]) -> "Stream":
+        return self.apply(partial(self._catch, handler=handler))
+
+    @staticmethod
+    def _catch(iterable: Iterable, handler: Callable[["Exception"], Any]) -> Iterable:
+        it = iter(iterable)
+        while True:
+            try:
+                item = next(it)
+                yield item
+            except StopIteration:
+                break
+            except Exception as ex:
+                handler(ex)
+
     def map(self, fn: Callable[[Any], Any]) -> "Stream":
         return self.apply(partial(map, fn))
 

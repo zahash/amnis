@@ -65,7 +65,7 @@ result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
     .collect(list)
 
 # result = [8, 10]
-# err_messages_1 = [
+# err_messages = [
 #       "encountered ValueError with the value (1,)", 
 #       "encountered ValueError with the value (2,)", 
 #       "encountered ValueError with the value (3,)",

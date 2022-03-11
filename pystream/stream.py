@@ -1,6 +1,6 @@
 from collections import defaultdict
 from functools import reduce, partial
-from typing import Iterable, Callable, Any, Union, Sequence, List, NamedTuple, AbstractSet, Optional
+from typing import *
 
 Grouper = NamedTuple("Grouper", [("collection", Any), ("grouper_fn", Callable[[Any, Any], Any])])
 
@@ -87,7 +87,7 @@ class Stream:
         except StopIteration:
             return None
 
-    def collect(self, collector: Callable[[Iterable], Iterable] = iter) -> Union[List, Sequence, Iterable, AbstractSet]:
+    def collect(self, collector: Callable[[Iterable], Iterable] = iter) -> Union[Sequence, Iterable, AbstractSet]:
         return collector(self._iterable)
 
     def reduce(self, fn: Callable[[Any, Any], Any], initial=None) -> Optional[Any]:

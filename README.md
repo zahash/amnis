@@ -113,10 +113,18 @@ class Person:
     def __init__(self, name, age):
         self.name, self.age = name, age
 
-result = Stream([Person("jack", 20), Person("jack", 30), Person("jill", 25)]) \
-            .group(key_fn=lambda p: p.name,
-                   val_fn=lambda p: p.age,
-                   grouper=Grouper(list, grouper_fn=lambda l, item: l.append(item)))
+people = [
+    Person("jack", 20),
+    Person("jack", 30),
+    Person("jill", 25)
+]
+
+result = Stream(people) \
+            .group(
+                key_fn=lambda p: p.name,
+                val_fn=lambda p: p.age,
+                grouper=Grouper(list, grouper_fn=lambda l, item: l.append(item))
+            )
 
 # {
 #   "jack": [20, 30],
@@ -133,10 +141,19 @@ class Person:
     def __init__(self, name, age):
         self.name, self.age = name, age
 
-result = Stream([Person("jack", 20), Person("jack", 30), Person("jill", 25), Person("jack", 40)]) \
-            .group(key_fn=lambda p: p.name,
-                   val_fn=lambda p: p.age,
-                   grouper=Grouper(str, grouper_fn=lambda s, item: f"{s}, {item}" if s else f"{item}"))
+people = [
+    Person("jack", 20),
+    Person("jack", 30),
+    Person("jill", 25),
+    Person("jack", 40)
+]
+
+result = Stream(people) \
+            .group(
+                key_fn=lambda p: p.name,
+                val_fn=lambda p: p.age,
+                grouper=Grouper(str, grouper_fn=lambda s, item: f"{s}, {item}" if s else f"{item}")
+            )
 
 # {
 #   "jack": "20, 30, 40",
@@ -168,6 +185,81 @@ result = Stream(range(100)) \
     .collect(list)
 
 # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+count
+
+```Python
+from pystream import Stream
+
+result = Stream(['a', 'b', 'c']) \
+            .count()
+
+# 3
+```
+
+takewhile
+
+```Python
+from pystream import Stream
+
+result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
+            .takewhile(lambda x: x != 3) \
+            .collect(list)
+
+# [1, 2, 2, 4, 5]
+```
+
+dropwhile
+
+```Python
+from pystream import Stream
+
+result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
+            .dropwhile(lambda x: x != 3) \
+            .collect(list)
+
+# [3, 2, 3, 5]
+```
+
+allmatch
+
+```Python
+from pystream import Stream
+
+result = Stream(["cat", "fat", "rat"]) \
+            .allmatch(lambda x: "at" in x)
+
+# True
+```
+
+```Python
+from pystream import Stream
+
+result = Stream(["cat", "dog", "rat"]) \
+            .allmatch(lambda x: "at" in x)
+
+# False
+```
+
+anymatch
+
+```Python
+from pystream import Stream
+
+result = Stream(["cat", "dog", "rat"]) \
+            .anymatch(lambda x: "at" in x)
+
+# True
+```
+
+```Python
+from pystream import Stream
+
+result = Stream(["cat", "dog", "rat"]) \
+            .anymatch(lambda x: "z" in x)
+
+# False
 ```
 
 error handling

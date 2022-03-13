@@ -2,7 +2,13 @@ from collections import defaultdict
 from functools import reduce, partial
 from typing import *
 
-Grouper = NamedTuple("Grouper", [("collection", Any), ("grouper_fn", Callable[[Any, Any], Any])])
+Grouper = NamedTuple(
+    "Grouper",
+    [
+        ("collection", Any),
+        ("grouper_fn", Callable[[Any, Any], Any])
+    ]
+)
 
 
 class Stream:
@@ -12,7 +18,7 @@ class Stream:
     def apply(self, fn: Callable[[Iterable], Iterable]) -> "Stream":
         return Stream(fn(self._iterable))
 
-    def catch(self, handler: Callable[[Any], Any], err_type = Exception) -> "Stream":
+    def catch(self, handler: Callable[[Any], Any], err_type=Exception) -> "Stream":
         return self.apply(partial(self._catch, handler=handler, err_type=err_type))
 
     def map(self, fn: Callable[[Any], Any]) -> "Stream":
@@ -63,13 +69,15 @@ class Stream:
     @staticmethod
     def _takewhile(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
         for item in iterable:
-            if not fn(item): break
+            if not fn(item):
+                break
             yield item
 
     @staticmethod
     def _limit(iterable: Iterable, n: int) -> Iterable:
         for item in iterable:
-            if n == 0: break
+            if n == 0:
+                break
             yield item
             n -= 1
 
@@ -93,8 +101,7 @@ class Stream:
     def reduce(self, fn: Callable[[Any, Any], Any], initial=None) -> Optional[Any]:
         try:
             return reduce(fn, self._iterable, initial) if initial is not None else reduce(fn, self._iterable)
-        except TypeError:
-            # thrown when stream is empty without initial value
+        except TypeError:  # thrown when stream is empty without initial value
             return None
 
     def foreach(self, fn: Callable[[Iterable], None]) -> None:

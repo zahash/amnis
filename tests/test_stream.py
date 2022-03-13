@@ -309,7 +309,8 @@ class TestStream(unittest.TestCase):
         err_messages = []
 
         def err_handler(err):
-            err_messages.append(f"encountered {type(err).__name__} with the value {err.args}")
+            err_messages.append(
+                f"encountered {type(err).__name__} with the value {err.args}")
 
         Stream([]) \
             .map(err_fn) \
@@ -327,7 +328,8 @@ class TestStream(unittest.TestCase):
         err_messages = []
 
         def err_handler(err):
-            err_messages.append(f"encountered {type(err).__name__} with the value {err.args}")
+            err_messages.append(
+                f"encountered {type(err).__name__} with the value {err.args}")
 
         result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
             .map(err_fn) \
@@ -360,10 +362,12 @@ class TestStream(unittest.TestCase):
         err_messages_2 = []
 
         def err_handler_1(err):
-            err_messages_1.append(f"encountered {type(err).__name__} with the value {err.args}")
+            err_messages_1.append(
+                f"encountered {type(err).__name__} with the value {err.args}")
 
         def err_handler_2(err):
-            err_messages_2.append(f"encountered {type(err).__name__} with the value {err.args}")
+            err_messages_2.append(
+                f"encountered {type(err).__name__} with the value {err.args}")
 
         result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
             .map(err_fn_1) \

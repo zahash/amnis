@@ -37,89 +37,6 @@ result = Stream([1, 2, 3]) \
 # [4, 6]
 ```
 
-error handling
-
-```Python
-from pystream import Stream
-
-def err_fn_1(x):
-    if x <= 3:
-        raise ValueError(x)
-    return x
-
-def err_fn_2(x):
-    if 2 <= x <= 6:
-        raise KeyError(x)
-    return x
-
-err_messages = []
-
-def err_handler(err):
-    err_messages.append(f"encountered {type(err).__name__} with the value {err.args}")
-
-result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
-    .map(err_fn_1) \
-    .map(err_fn_2) \
-    .filter(lambda x: x % 2 == 0) \
-    .catch(err_handler) \
-    .collect(list)
-
-# result = [8, 10]
-# err_messages = [
-#       "encountered ValueError with the value (1,)", 
-#       "encountered ValueError with the value (2,)", 
-#       "encountered ValueError with the value (3,)",
-#       "encountered KeyError with the value (4,)", 
-#       "encountered KeyError with the value (5,)", 
-#       "encountered KeyError with the value (6,)"
-# ]
-```
-
-error handling at granular level
-
-```Python
-from pystream import Stream
-
-def err_fn_1(x):
-    if x <= 3:
-        raise ValueError(x)
-    return x
-
-def err_fn_2(x):
-    if 2 <= x <= 6:
-        raise KeyError(x)
-    return x
-
-err_messages_1 = []
-err_messages_2 = []
-
-def err_handler_1(err):
-    err_messages_1.append(f"encountered {type(err).__name__} with the value {err.args}")
-
-def err_handler_2(err):
-    err_messages_2.append(f"encountered {type(err).__name__} with the value {err.args}")
-
-result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
-    .map(err_fn_1) \
-    .catch(err_handler_1) \
-    .map(err_fn_2) \
-    .filter(lambda x: x % 2 == 0) \
-    .catch(err_handler_2) \
-    .collect(list)
-
-# result = [8, 10]
-# err_messages_1 = [
-#       "encountered ValueError with the value (1,)", 
-#       "encountered ValueError with the value (2,)", 
-#       "encountered ValueError with the value (3,)"
-# ]
-# err_messages_2 = [
-#       "encountered KeyError with the value (4,)", 
-#       "encountered KeyError with the value (5,)", 
-#       "encountered KeyError with the value (6,)"
-# ]
-```
-
 reduce
 
 ```Python
@@ -197,12 +114,12 @@ class Person:
         self.name, self.age = name, age
 
 result = Stream([Person("jack", 20), Person("jack", 30), Person("jill", 25)]) \
-            .group(key_fn=lambda p: p.name, 
+            .group(key_fn=lambda p: p.name,
                    val_fn=lambda p: p.age,
                    grouper=Grouper(list, grouper_fn=lambda l, item: l.append(item)))
 
 # {
-#   "jack": [20, 30], 
+#   "jack": [20, 30],
 #   "jill": [25]
 # }
 ```
@@ -217,12 +134,12 @@ class Person:
         self.name, self.age = name, age
 
 result = Stream([Person("jack", 20), Person("jack", 30), Person("jill", 25), Person("jack", 40)]) \
-            .group(key_fn=lambda p: p.name, 
+            .group(key_fn=lambda p: p.name,
                    val_fn=lambda p: p.age,
                    grouper=Grouper(str, grouper_fn=lambda s, item: f"{s}, {item}" if s else f"{item}"))
 
 # {
-#   "jack": "20, 30, 40", 
+#   "jack": "20, 30, 40",
 #   "jill": "25"
 # }
 ```
@@ -251,6 +168,89 @@ result = Stream(range(100)) \
     .collect(list)
 
 # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+error handling
+
+```Python
+from pystream import Stream
+
+def err_fn_1(x):
+    if x <= 3:
+        raise ValueError(x)
+    return x
+
+def err_fn_2(x):
+    if 2 <= x <= 6:
+        raise KeyError(x)
+    return x
+
+err_messages = []
+
+def err_handler(err):
+    err_messages.append(f"encountered {type(err).__name__} with the value {err.args}")
+
+result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
+    .map(err_fn_1) \
+    .map(err_fn_2) \
+    .filter(lambda x: x % 2 == 0) \
+    .catch(err_handler) \
+    .collect(list)
+
+# result = [8, 10]
+# err_messages = [
+#       "encountered ValueError with the value (1,)",
+#       "encountered ValueError with the value (2,)",
+#       "encountered ValueError with the value (3,)",
+#       "encountered KeyError with the value (4,)",
+#       "encountered KeyError with the value (5,)",
+#       "encountered KeyError with the value (6,)"
+# ]
+```
+
+error handling at granular level
+
+```Python
+from pystream import Stream
+
+def err_fn_1(x):
+    if x <= 3:
+        raise ValueError(x)
+    return x
+
+def err_fn_2(x):
+    if 2 <= x <= 6:
+        raise KeyError(x)
+    return x
+
+err_messages_1 = []
+err_messages_2 = []
+
+def err_handler_1(err):
+    err_messages_1.append(f"encountered {type(err).__name__} with the value {err.args}")
+
+def err_handler_2(err):
+    err_messages_2.append(f"encountered {type(err).__name__} with the value {err.args}")
+
+result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
+    .map(err_fn_1) \
+    .catch(err_handler_1) \
+    .map(err_fn_2) \
+    .filter(lambda x: x % 2 == 0) \
+    .catch(err_handler_2) \
+    .collect(list)
+
+# result = [8, 10]
+# err_messages_1 = [
+#       "encountered ValueError with the value (1,)",
+#       "encountered ValueError with the value (2,)",
+#       "encountered ValueError with the value (3,)"
+# ]
+# err_messages_2 = [
+#       "encountered KeyError with the value (4,)",
+#       "encountered KeyError with the value (5,)",
+#       "encountered KeyError with the value (6,)"
+# ]
 ```
 
 ## Development setup

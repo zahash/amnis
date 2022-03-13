@@ -266,83 +266,64 @@ error handling
 
 ```Python
 from pystream import Stream
+import logging
 
-def err_fn_1(x):
-    if x <= 3:
-        raise ValueError(x)
-    return x
+def handler(err):
+    logging.error(err)
 
-def err_fn_2(x):
-    if 2 <= x <= 6:
-        raise KeyError(x)
-    return x
-
-err_messages = []
-
-def err_handler(err):
-    err_messages.append(f"encountered {type(err).__name__} with the value {err.args}")
-
-result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
-    .map(err_fn_1) \
-    .map(err_fn_2) \
-    .filter(lambda x: x % 2 == 0) \
-    .catch(err_handler) \
+result = Stream(['a', 'b', 'c', 10, 'd']) \
+    .map(lambda x: x.upper()) \
+    .catch(handler) \
     .collect(list)
 
-# result = [8, 10]
-# err_messages = [
-#       "encountered ValueError with the value (1,)",
-#       "encountered ValueError with the value (2,)",
-#       "encountered ValueError with the value (3,)",
-#       "encountered KeyError with the value (4,)",
-#       "encountered KeyError with the value (5,)",
-#       "encountered KeyError with the value (6,)"
-# ]
+# >>> ERROR:root:'int' object has no attribute 'upper'
+# result = ['A', 'B', 'C', 'D']
 ```
 
-error handling at granular level
+multiple error handling
+
+```Python
+from pystream import Stream
+import logging
+
+def handle_upper(err):
+    logging.error(err)
+
+def handle_index_out_of_bounds(err):
+    logging.warning(err)
+
+result = Stream(['ab', 'cd', 'e', 10, 'fg']) \
+    .map(lambda x: x.upper()) \
+    .catch(handle_upper) \
+    .map(lambda x: x[1]) \
+    .catch(handle_index_out_of_bounds) \
+    .collect(list)
+
+# >>> WARNING:root:string index out of range
+# >>> ERROR:root:'int' object has no attribute 'upper'
+# result = ['B', 'D', 'G']
+```
+
+replace error value
 
 ```Python
 from pystream import Stream
 
-def err_fn_1(x):
-    if x <= 3:
+def sqrt(x):
+    if x < 0:
         raise ValueError(x)
-    return x
+    return x ** 0.5
 
-def err_fn_2(x):
-    if 2 <= x <= 6:
-        raise KeyError(x)
-    return x
+def handler_neg_sqrt(err):
+    (value,) = err.args
+    return value * 1000
 
-err_messages_1 = []
-err_messages_2 = []
-
-def err_handler_1(err):
-    err_messages_1.append(f"encountered {type(err).__name__} with the value {err.args}")
-
-def err_handler_2(err):
-    err_messages_2.append(f"encountered {type(err).__name__} with the value {err.args}")
-
-result = Stream([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) \
-    .map(err_fn_1) \
-    .catch(err_handler_1) \
-    .map(err_fn_2) \
-    .filter(lambda x: x % 2 == 0) \
-    .catch(err_handler_2) \
+result = Stream([4, 9, -3, 5]) \
+    .map(sqrt) \
+    .catch(handler_neg_sqrt) \
     .collect(list)
 
-# result = [8, 10]
-# err_messages_1 = [
-#       "encountered ValueError with the value (1,)",
-#       "encountered ValueError with the value (2,)",
-#       "encountered ValueError with the value (3,)"
-# ]
-# err_messages_2 = [
-#       "encountered KeyError with the value (4,)",
-#       "encountered KeyError with the value (5,)",
-#       "encountered KeyError with the value (6,)"
-# ]
+# [2.0, 3.0, -3000, 2.23606797749979]
 ```
 
 ## Development setup

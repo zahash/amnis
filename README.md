@@ -326,6 +326,33 @@ result = Stream([4, 9, -3, 5]) \
 # [2.0, 3.0, -3000, 2.23606797749979]
 ```
 
+specific error handling
+
+```Python
+def err_fn(x):
+    if x == 'a':
+        raise ValueError(x)
+    if x == 'b':
+        raise KeyError(x)
+    return x
+
+def handle_value_err(err):
+    (value,) = err.args
+    return value * 2
+
+def handle_key_err(err):
+    (value,) = err.args
+    return value * 4
+
+result = Stream(['e', 'a', 'g', 'd', 'b']) \
+    .map(err_fn) \
+    .catch(handle_value_err, ValueError) \
+    .catch(handle_key_err, KeyError) \
+    .collect(list)
+
+# ['e', 'aa', 'g', 'd', 'bbbb']
+```
+
 ## Development setup
 
 Clone this repo and install packages listed in requirements.txt

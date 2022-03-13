@@ -407,3 +407,27 @@ class TestStream(unittest.TestCase):
             .collect(list)
 
         self.assertListEqual([2, 4, 6, 18, 20], result)
+
+    def test_error_with_specific_error_type(self):
+        def err_fn(x):
+            if x == 'a':
+                raise ValueError(x)
+            if x == 'b':
+                raise KeyError(x)
+            return x
+
+        def handle_value_err(err):
+            (value,) = err.args
+            return value * 2
+
+        def handle_key_err(err):
+            (value,) = err.args
+            return value * 4
+
+        result = Stream(['e', 'a', 'g', 'd', 'b']) \
+            .map(err_fn) \
+            .catch(handle_value_err, ValueError) \
+            .catch(handle_key_err, KeyError) \
+            .collect(list)
+
+        self.assertListEqual(['e', 'aa', 'g', 'd', 'bbbb'], result)

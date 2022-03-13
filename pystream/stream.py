@@ -53,7 +53,7 @@ class Stream:
                 break
             except err_type as ex:
                 return_val = handler(ex)
-                if return_val:
+                if return_val is not None:
                     yield return_val
 
     @staticmethod
@@ -117,7 +117,7 @@ class Stream:
             # eg: appending item to a list
             # but if there is a return value then it is assumed not inplace
             # eg: concatenating strings
-            if return_val:
+            if return_val is not None:
                 d[key] = return_val
         return dict(d)
 

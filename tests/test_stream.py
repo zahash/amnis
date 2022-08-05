@@ -9,6 +9,26 @@ Person = namedtuple("Person", ["name", "age"])
 
 
 class TestStream(unittest.TestCase):
+    def test_stream_is_iterable(self):
+        iterable = Stream([1, 2, 3, 4, 5])
+
+        result = []
+        for n in iterable:
+            result.append(n)
+
+        self.assertListEqual([1, 2, 3, 4, 5], result)
+
+    def test_stream_is_iterable_with_map_filter(self):
+        iterable = Stream([1, 2, 3, 4, 5]) \
+            .map(lambda x: x * 2) \
+            .filter(lambda x: x > 2)
+
+        result = []
+        for n in iterable:
+            result.append(n)
+
+        self.assertListEqual([4, 6, 8, 10], result)
+
     def test_collect_empty_with_default(self):
         result = Stream([]) \
             .collect()

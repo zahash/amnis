@@ -15,6 +15,9 @@ class Stream:
     def __init__(self, iterable: Iterable):
         self._iterable = iterable
 
+    def __iter__(self):
+        return iter(self._iterable)
+
     def apply(self, fn: Callable[[Iterable], Iterable]) -> "Stream":
         return Stream(fn(self._iterable))
 

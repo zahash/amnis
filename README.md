@@ -82,6 +82,34 @@ result = Stream([1, 2, 3]) \
 # 10
 ```
 
+iterate with map, filter
+
+```Python
+from pystream import Stream
+
+stream = Stream([1, 2, 3])
+
+result = []
+for n in stream:
+    result.append(n)
+
+# [1, 2, 3]
+```
+
+```Python
+from pystream import Stream
+
+stream = Stream([1, 2, 3]) \
+    .map(lambda x: x * 2) \
+    .filter(lambda x: x > 2)
+
+result = []
+for n in stream:
+    result.append(n)
+
+# [4, 6]
+```
+
 first
 
 ```Python

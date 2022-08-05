@@ -24,17 +24,28 @@ pip install git+https://github.com/zahash/pystream.git
 
 ## Usage examples
 
-map and filter
+map
+
+```Python
+from pystream import Stream
+
+result = Stream([1, 2, 3]) \
+    .map(lambda x: x * 2) \
+    .collect(list)
+
+# [2, 4, 6]
+```
+
+filter
 
 ```Python
 from pystream import Stream
 
 result = Stream([1, 2, 3]) \
     .filter(lambda x: x > 1) \
-    .map(lambda x: x * 2) \
     .collect(list)
 
-# [4, 6]
+# [2, 3]
 ```
 
 reduce
@@ -44,22 +55,31 @@ from pystream import Stream
 import operator
 
 result = Stream([1, 2, 3]) \
-    .filter(lambda x: x > 1) \
-    .map(lambda x: x * 2) \
     .reduce(operator.add, initial=20)
 
-# 30
+# 26
 ```
 
 ```Python
 from pystream import Stream
 
 result = Stream([1, 2, 3]) \
-    .filter(lambda x: x > 1) \
-    .map(lambda x: x * 2) \
     .reduce(lambda x, y: x + y, initial=20)
 
-# 30
+# 26
+```
+
+map, filter and reduce
+
+```Python
+from pystream import Stream
+
+result = Stream([1, 2, 3]) \
+    .map(lambda x: x * 2) \
+    .filter(lambda x: x > 2) \
+    .reduce(lambda x, y: x + y, initial=0)
+
+# 10
 ```
 
 first
@@ -68,11 +88,9 @@ first
 from pystream import Stream
 
 result = Stream([1, 2, 3]) \
-    .map(lambda x: x * 2) \
-    .filter(lambda x: x > 1) \
     .first()
 
-# 2
+# 1
 ```
 
 foreach
@@ -81,13 +99,22 @@ foreach
 from pystream import Stream
 
 Stream([1, 2, 3]) \
-    .map(lambda x: x * 2) \
-    .filter(lambda x: x > 1) \
     .foreach(print)
 
+# >>> 1
 # >>> 2
-# >>> 4
-# >>> 6
+# >>> 3
+```
+
+```Python
+from pystream import Stream
+
+Stream([1, 2, 3]) \
+    .foreach(lambda i: print(i))
+
+# >>> 1
+# >>> 2
+# >>> 3
 ```
 
 distinct
@@ -96,12 +123,10 @@ distinct
 from pystream import Stream
 
 result = Stream([3, 2, 3, 1, 3, 2, 2]) \
-    .map(lambda x: x * 2) \
     .distinct() \
-    .filter(lambda x: x > 1) \
     .collect(list)
 
-# [6, 4, 2]
+# [3, 2, 1]
 ```
 
 group with list
@@ -152,11 +177,11 @@ result = Stream(people) \
             .group(
                 key_fn=lambda p: p.name,
                 val_fn=lambda p: p.age,
-                grouper=Grouper(str, grouper_fn=lambda s, item: f"{s}, {item}" if s else f"{item}")
+                grouper=Grouper(str, grouper_fn=lambda s, item: f"{s}--{item}" if s else f"{item}")
             )
 
 # {
-#   "jack": "20, 30, 40",
+#   "jack": "20--30--40",
 #   "jill": "25"
 # }
 ```
@@ -167,12 +192,10 @@ sorted
 from pystream import Stream
 
 result = Stream([5, 4, 3, 2, 1]) \
-            .map(lambda x: x - 1) \
             .sorted() \
-            .filter(lambda x: x % 2 == 0) \
             .collect(list)
 
-# [0, 2, 4]
+# [1, 2, 3, 4, 5]
 ```
 
 limit
@@ -318,12 +341,12 @@ def handler_neg_sqrt(err):
     (value,) = err.args
     return value * 1000
 
-result = Stream([4, 9, -3, 5]) \
+result = Stream([4, 9, -3, 16]) \
     .map(sqrt) \
     .catch(handler_neg_sqrt) \
     .collect(list)
 
-# [2.0, 3.0, -3000, 2.23606797749979]
+# [2.0, 3.0, -3000, 4.0]
 ```
 
 specific error handling

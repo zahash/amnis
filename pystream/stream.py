@@ -36,11 +36,11 @@ class Stream:
     def limit(self, n: int) -> "Stream":
         return self.apply(partial(self._limit, n=n))
 
-    def takewhile(self, fn: Callable[[Any], bool]) -> "Stream":
-        return self.apply(partial(self._takewhile, fn=fn))
+    def takeuntil(self, fn: Callable[[Any], bool]) -> "Stream":
+        return self.apply(partial(self._takeuntil, fn=fn))
 
-    def dropwhile(self, fn: Callable[[Any], bool]) -> "Stream":
-        return self.apply(partial(self._dropwhile, fn=fn))
+    def dropuntil(self, fn: Callable[[Any], bool]) -> "Stream":
+        return self.apply(partial(self._dropuntil, fn=fn))
 
     @staticmethod
     def _catch(iterable: Iterable, handler: Callable[["Exception"], Any], err_type) -> Iterable:
@@ -57,7 +57,7 @@ class Stream:
                     yield return_val
 
     @staticmethod
-    def _dropwhile(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
+    def _dropuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
         start_allowing = False
         for item in iterable:
             if not fn(item):
@@ -67,7 +67,7 @@ class Stream:
                 yield item
 
     @staticmethod
-    def _takewhile(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
+    def _takeuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
         for item in iterable:
             if not fn(item):
                 break

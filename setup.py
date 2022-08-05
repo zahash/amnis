@@ -11,7 +11,7 @@ with (HERE / "requirements.txt").open() as f:
 
 setup(
     name="pystream",
-    version="0.0.3",
+    version="0.0.4",
     description="Java like Stream pystream for Python",
     long_description=README,
     long_description_content_type="text/markdown",

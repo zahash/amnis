@@ -198,25 +198,25 @@ result = Stream(['a', 'b', 'c']) \
 # 3
 ```
 
-takewhile
+takeuntil
 
 ```Python
 from pystream import Stream
 
 result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
-            .takewhile(lambda x: x != 3) \
+            .takeuntil(lambda x: x != 3) \
             .collect(list)
 
 # [1, 2, 2, 4, 5]
 ```
 
-dropwhile
+dropuntil
 
 ```Python
 from pystream import Stream
 
 result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
-            .dropwhile(lambda x: x != 3) \
+            .dropuntil(lambda x: x != 3) \
             .collect(list)
 
 # [3, 2, 3, 5]

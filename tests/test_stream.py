@@ -272,30 +272,30 @@ class TestStream(unittest.TestCase):
 
         self.assertEqual(3, result)
 
-    def test_takewhile(self):
+    def test_takeuntil(self):
         result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
-            .takewhile(lambda x: x != 3) \
+            .takeuntil(lambda x: x != 3) \
             .collect(list)
 
         self.assertListEqual([1, 2, 2, 4, 5], result)
 
-    def test_takewhile_with_generator(self):
+    def test_takeuntil_with_generator(self):
         result = Stream(range(10)) \
-            .takewhile(lambda x: x <= 3) \
+            .takeuntil(lambda x: x <= 3) \
             .collect(list)
 
         self.assertListEqual([0, 1, 2, 3], result)
 
-    def test_dropwhile(self):
+    def test_dropuntil(self):
         result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
-            .dropwhile(lambda x: x != 3) \
+            .dropuntil(lambda x: x != 3) \
             .collect(list)
 
         self.assertListEqual([3, 2, 3, 5], result)
 
-    def test_dropwhile_with_generator(self):
+    def test_dropuntil_with_generator(self):
         result = Stream(range(10)) \
-            .dropwhile(lambda x: x <= 3) \
+            .dropuntil(lambda x: x <= 3) \
             .collect(list)
 
         self.assertListEqual([4, 5, 6, 7, 8, 9], result)

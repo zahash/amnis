@@ -30,6 +30,12 @@ class Stream:
     def filter(self, fn: Callable[[Any], bool]) -> "Stream":
         return self.apply(partial(filter, fn))
 
+    def flatten(self) -> "Stream":
+        return self.apply(lambda iterable: [item for sublist in iterable for item in sublist])
+
+    def flatmap(self, fn: Callable[[Any], Iterable]) -> "Stream":
+        return self.map(fn).flatten()
+
     def distinct(self) -> "Stream":
         return self.apply(self._distinct)
 

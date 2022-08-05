@@ -112,6 +112,47 @@ for n in stream:
 # [4, 6]
 ```
 
+flatten
+
+```Python
+from pystream import Stream
+
+result = Stream([
+            [1, 2, 3],
+            [],
+            [4, 5]
+        ]) \
+            .flatten() \
+            .collect(list)
+
+# [1, 2, 3, 4, 5]
+```
+
+flatmap
+
+```Python
+from pystream import Stream
+
+result = Stream(["it's Sunny in", "", "California"]) \
+            .flatmap(lambda s: s.split(" ")) \
+            .collect(list)
+
+# ["it's", "Sunny", "in", "", "California"]
+```
+
+flatmap is exactly the same as doing map and flatten
+
+```Python
+from pystream import Stream
+
+result = Stream(["it's Sunny in", "", "California"]) \
+            .map(lambda s: s.split(" ")) \
+            .flatten() \
+            .collect(list)
+
+# ["it's", "Sunny", "in", "", "California"]
+```
+
 first
 
 ```Python

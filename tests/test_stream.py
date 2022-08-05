@@ -1,3 +1,4 @@
+from gc import collect
 import operator
 import unittest
 from collections import namedtuple
@@ -147,6 +148,24 @@ class TestStream(unittest.TestCase):
             .reduce(operator.add, 10)
 
         self.assertEqual(20, result)
+
+    def test_flatten(self):
+        result = Stream([
+            [1, 2, 3],
+            [],
+            [4, 5]
+        ]) \
+            .flatten() \
+            .collect(list)
+
+        self.assertListEqual([1, 2, 3, 4, 5], result)
+
+    def test_flatmap(self):
+        result = Stream(["it's Sunny in", "", "California"]) \
+            .flatmap(lambda s: s.split(" ")) \
+            .collect(list)
+
+        self.assertListEqual(["it's", "Sunny", "in", "", "California"], result)
 
     def test_distinct(self):
         result = Stream([1, 1, 2, 3, 3, 2]) \

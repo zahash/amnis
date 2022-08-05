@@ -82,7 +82,7 @@ result = Stream([1, 2, 3]) \
 # 10
 ```
 
-iterate with map, filter
+iterate
 
 ```Python
 from pystream import Stream
@@ -95,6 +95,8 @@ for n in stream:
 
 # [1, 2, 3]
 ```
+
+iterate with map, filter
 
 ```Python
 from pystream import Stream

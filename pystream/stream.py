@@ -31,7 +31,7 @@ class Stream:
         return self.apply(partial(filter, fn))
 
     def flatten(self) -> "Stream":
-        return self.apply(lambda iterable: [item for sublist in iterable for item in sublist])
+        return self.apply(lambda iterable: (item for sublist in iterable for item in sublist))
 
     def flatmap(self, fn: Callable[[Any], Iterable]) -> "Stream":
         return self.map(fn).flatten()

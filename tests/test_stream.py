@@ -160,6 +160,17 @@ class TestStream(unittest.TestCase):
 
         self.assertListEqual([1, 2, 3, 4, 5], result)
 
+    def test_flatten_is_lazy(self):
+        result = Stream([
+            [1, 2, 3],
+            [],
+            [4, 5]
+        ]).flatten()
+
+        from types import GeneratorType
+
+        self.assertTrue(isinstance(result._iterable, GeneratorType))
+
     def test_flatmap(self):
         result = Stream(["it's Sunny in", "", "California"]) \
             .flatmap(lambda s: s.split(" ")) \

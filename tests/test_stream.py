@@ -45,6 +45,9 @@ class TestStream(unittest.TestCase):
         self.assertEqual(2, next(result))
         self.assertEqual(3, next(result))
 
+        with self.assertRaises(StopIteration):
+            next(result)
+
     def test_collect_with_list(self):
         result = Stream([1, 2, 3]) \
             .collect(list)
@@ -96,12 +99,18 @@ class TestStream(unittest.TestCase):
 
         self.assertListEqual([3, 6, 9], result)
 
+    def test_map_is_lazy(self):
+        Stream([1, 2, 3]).map(throw).map(lambda x: x + 2)
+
     def test_filter(self):
         result = Stream([1, 2, 3]) \
             .filter(lambda x: x > 1) \
             .collect(list)
 
         self.assertListEqual([2, 3], result)
+
+    def test_filter_is_lazy(self):
+        Stream([1, 2, 3]).map(throw).filter(lambda x: x > 2)
 
     def test_reduce_empty_without_initial(self):
         result = Stream([]) \
@@ -161,15 +170,7 @@ class TestStream(unittest.TestCase):
         self.assertListEqual([1, 2, 3, 4, 5], result)
 
     def test_flatten_is_lazy(self):
-        result = Stream([
-            [1, 2, 3],
-            [],
-            [4, 5]
-        ]).flatten()
-
-        from types import GeneratorType
-
-        self.assertTrue(isinstance(result._iterable, GeneratorType))
+        Stream([[1, 2, 3], [], [4, 5]]).map(throw).flatten()
 
     def test_flatmap(self):
         result = Stream(["it's Sunny in", "", "California"]) \
@@ -177,6 +178,11 @@ class TestStream(unittest.TestCase):
             .collect(list)
 
         self.assertListEqual(["it's", "Sunny", "in", "", "California"], result)
+
+    def test_flatmap_is_lazy(self):
+        Stream(["it's Sunny in", "", "California"]) \
+            .map(throw) \
+            .flatmap(lambda s: s.split(" "))
 
     def test_distinct(self):
         result = Stream([1, 1, 2, 3, 3, 2]) \
@@ -186,6 +192,9 @@ class TestStream(unittest.TestCase):
         self.assertEqual(1, next(result))
         self.assertEqual(2, next(result))
         self.assertEqual(3, next(result))
+
+    def test_distinct_is_lazy(self):
+        Stream([1, 1, 2, 3, 3, 2]).map(throw).distinct()
 
     def test_distinct_with_map_filter(self):
         result = Stream([1, 1, 2, 3, 3, 2]) \
@@ -244,6 +253,10 @@ class TestStream(unittest.TestCase):
 
         self.assertListEqual([1, 2, 3], result)
 
+    @unittest.skip("sorted is not yet lazy.")
+    def test_sorted_is_lazy(self):
+        Stream([3, 1, 2]).map(throw).sorted()
+
     def test_sorted_with_map_filter(self):
         result = Stream([5, 4, 3, 2, 1]) \
             .map(lambda x: x - 1) \
@@ -259,6 +272,9 @@ class TestStream(unittest.TestCase):
             .collect(list)
 
         self.assertListEqual(list(range(10)), result)
+
+    def test_limit_is_lazy(self):
+        Stream(range(100)).map(throw).limit(10)
 
     def test_limit_excess(self):
         result = Stream(range(10)) \
@@ -329,6 +345,10 @@ class TestStream(unittest.TestCase):
 
         self.assertListEqual([1, 2, 2, 4, 5], result)
 
+    def test_takeuntil_is_lazy(self):
+        Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]).map(throw) \
+            .takeuntil(lambda x: x != 3)
+
     def test_takeuntil_with_generator(self):
         result = Stream(range(10)) \
             .takeuntil(lambda x: x <= 3) \
@@ -343,6 +363,10 @@ class TestStream(unittest.TestCase):
 
         self.assertListEqual([3, 2, 3, 5], result)
 
+    def test_dropuntil_is_lazy(self):
+        Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]).map(throw) \
+            .dropuntil(lambda x: x != 3)
+
     def test_dropuntil_with_generator(self):
         result = Stream(range(10)) \
             .dropuntil(lambda x: x <= 3) \
@@ -350,7 +374,7 @@ class TestStream(unittest.TestCase):
 
         self.assertListEqual([4, 5, 6, 7, 8, 9], result)
 
-    def test_error_empty(self):
+    def test_catch_empty(self):
         def err_fn(x):
             if x <= 3:
                 return x
@@ -369,7 +393,7 @@ class TestStream(unittest.TestCase):
 
         self.assertListEqual([], err_messages)
 
-    def test_error(self):
+    def test_catch(self):
         def err_fn(x):
             if x <= 6:
                 return x
@@ -444,7 +468,7 @@ class TestStream(unittest.TestCase):
 
         self.assertListEqual([8, 10], result)
 
-    def test_error_with_return_val(self):
+    def test_catch_with_return_val(self):
         def err_fn(x):
             if x <= 6:
                 return x
@@ -462,7 +486,7 @@ class TestStream(unittest.TestCase):
 
         self.assertListEqual([2, 4, 6, 18, 20], result)
 
-    def test_error_with_specific_error_type(self):
+    def test_catch_with_specific_error_type(self):
         def err_fn(x):
             if x == 'a':
                 raise ValueError(x)
@@ -485,3 +509,7 @@ class TestStream(unittest.TestCase):
             .collect(list)
 
         self.assertListEqual(['e', 'aa', 'g', 'd', 'bbbb'], result)
+
+
+def throw(*args, **kwargs):
+    raise Exception()

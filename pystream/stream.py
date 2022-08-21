@@ -90,13 +90,14 @@ class Stream:
 
     @staticmethod
     def _dropuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
-        start_allowing = False
-        for item in iterable:
-            if not fn(item):
-                start_allowing = True
+        it = iter(iterable)
 
-            if start_allowing:
+        for item in it:
+            if not fn(item):
                 yield item
+                break
+
+        yield from it
 
     def first(self) -> Optional[Any]:
         try:

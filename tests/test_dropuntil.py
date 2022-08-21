@@ -12,6 +12,20 @@ class TestDropUntil(unittest.TestCase):
 
         self.assertListEqual([3, 2, 3, 5], result)
 
+    def test_dropuntil_drop_all(self):
+        result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
+            .dropuntil(lambda x: x != 50) \
+            .collect(list)
+
+        self.assertListEqual([], result)
+
+    def test_dropuntil_take_all(self):
+        result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
+            .dropuntil(lambda x: x != 1) \
+            .collect(list)
+
+        self.assertListEqual([1, 2, 2, 4, 5, 3, 2, 3, 5], result)
+
     def test_dropuntil_is_lazy(self):
         Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]).map(throw) \
             .dropuntil(lambda x: x != 3)

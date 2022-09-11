@@ -106,6 +106,12 @@ class Stream:
                 return item
             n -= 1
 
+    def last(self) -> Optional[Any]:
+        last_item = None
+        for item in self._iterable:
+            last_item = item
+        return last_item
+
     def collect(self, collector: Callable[[Iterable], Iterable] = iter) -> Union[Sequence, Iterable, AbstractSet]:
         return collector(self._iterable)
 

@@ -5,19 +5,17 @@ from pystream import Stream
 
 class TestNth(unittest.TestCase):
     def test_nth_empty(self):
-        result = Stream([]).nth(10)
-
-        self.assertIsNone(result)
+        self.assertIsNone(Stream([]).nth(0))
+        self.assertIsNone(Stream([]).nth(-1))
+        self.assertIsNone(Stream([]).nth(1))
+        self.assertIsNone(Stream([]).nth(10))
 
     def test_nth_negative(self):
-        result = Stream([1, 2, 3]).nth(-1)
-
-        self.assertIsNone(result)
+        self.assertIsNone(Stream([1, 2, 3]).nth(-1))
 
     def test_nth_excess(self):
-        result = Stream([1, 2, 3]).nth(3)
-
-        self.assertIsNone(result)
+        self.assertIsNone(Stream([1, 2, 3]).nth(3))
+        self.assertIsNone(Stream([1, 2, 3]).nth(10))
 
     def test_nth(self):
         self.assertEqual(1, Stream([1, 2, 3]).nth(0))

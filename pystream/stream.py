@@ -130,12 +130,19 @@ class Stream:
         except TypeError:  # thrown when stream is empty without initial value
             return None
 
-    def max(self, key: Callable[[Any], Any] = lambda x: x):
+    def max(self, key: Callable[[Any], Any] = lambda x: x) -> Optional[Any]:
         _max = None
         for item in self._iterable:
             if _max is None or key(item) > key(_max):
                 _max = item
         return _max
+
+    def min(self, key: Callable[[Any], Any] = lambda x: x) -> Optional[Any]:
+        _min = None
+        for item in self._iterable:
+            if _min is None or key(item) < key(_min):
+                _min = item
+        return _min
 
     def find(self, fn: Callable[[Any], bool]) -> Optional[Any]:
         return self.filter(fn).first()

@@ -130,6 +130,9 @@ class Stream:
         except TypeError:  # thrown when stream is empty without initial value
             return None
 
+    def find(self, fn: Callable[[Any], bool]) -> Optional[Any]:
+        return self.filter(fn).first()
+
     def foreach(self, fn: Callable[[Iterable], None]) -> None:
         for item in self._iterable:
             fn(item)

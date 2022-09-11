@@ -1,4 +1,5 @@
 from collections import defaultdict
+from contextlib import suppress
 from functools import reduce, partial
 from typing import *
 
@@ -13,21 +14,22 @@ Grouper = NamedTuple(
 
 class Stream:
     def __init__(self, iterable: Iterable):
-        self._iterable = iterable
+        self._iterator = iter(iterable)
 
     def __iter__(self):
-        return iter(self._iterable)
+        return self._iterator
+
+    def __next__(self):
+        return next(self._iterator)
 
     def apply(self, fn: Callable[[Iterable], Iterable]) -> "Stream":
         return Stream(fn(self))
 
-    def catch(self, handler: Callable[[Any], Any], err_type=Exception) -> "Stream":
-        def _catch(iterable: Iterable, handler: Callable[["Exception"], Any], err_type) -> Iterable:
-            it = iter(iterable)
+    def catch(self, handler: Callable[["Exception"], Any], err_type=Exception) -> "Stream":
+        def _catch(iterable: Iterable) -> Iterable:
             while True:
                 try:
-                    item = next(it)
-                    yield item
+                    yield next(iter(iterable))
                 except StopIteration:
                     break
                 except err_type as ex:
@@ -35,7 +37,7 @@ class Stream:
                     if return_val is not None:
                         yield return_val
 
-        return self.apply(partial(_catch, handler=handler, err_type=err_type))
+        return self.apply(_catch)
 
     def map(self, fn: Callable[[Any], Any]) -> "Stream":
         return self.apply(partial(map, fn))
@@ -44,7 +46,11 @@ class Stream:
         return self.apply(partial(filter, fn))
 
     def flatten(self) -> "Stream":
-        return self.apply(lambda iterable: (item for sublist in iterable for item in sublist))
+        def _flatten(nested_iterable: Iterable) -> Iterable:
+            for iterable in nested_iterable:
+                yield from iterable
+
+        return self.apply(_flatten)
 
     def flatmap(self, fn: Callable[[Any], Iterable]) -> "Stream":
         return self.map(fn).flatten()
@@ -74,13 +80,12 @@ class Stream:
 
     def skip(self, n: int) -> "Stream":
         def _skip(iterable: Iterable, n: int) -> Iterable:
-            it = iter(iterable)
-            for item in it:
+            for item in iterable:
                 if n == 0:
                     yield item
                     break
                 n -= 1
-            yield from it
+            yield from iterable
 
         return self.apply(partial(_skip, n=max(n, 0)))
 
@@ -95,14 +100,12 @@ class Stream:
 
     def skipuntil(self, fn: Callable[[Any], bool]) -> "Stream":
         def _skipuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
-            it = iter(iterable)
-
-            for item in it:
+            for item in iterable:
                 if not fn(item):
                     yield item
                     break
 
-            yield from it
+            yield from iterable
 
         return self.apply(partial(_skipuntil, fn=fn))
 
@@ -125,24 +128,16 @@ class Stream:
         return collector(self)
 
     def reduce(self, fn: Callable[[Any, Any], Any], initial=None) -> Optional[Any]:
-        try:
+        with suppress(TypeError):  # thrown when stream is empty without initial value
             return reduce(fn, self, initial) if initial is not None else reduce(fn, self)
-        except TypeError:  # thrown when stream is empty without initial value
-            return None
 
     def max(self, key: Callable[[Any], Any] = lambda x: x) -> Optional[Any]:
-        _max = None
-        for item in self:
-            if _max is None or key(item) > key(_max):
-                _max = item
-        return _max
+        with suppress(ValueError):  # thrown when stream is empty
+            return max(self, key=key)
 
     def min(self, key: Callable[[Any], Any] = lambda x: x) -> Optional[Any]:
-        _min = None
-        for item in self:
-            if _min is None or key(item) < key(_min):
-                _min = item
-        return _min
+        with suppress(ValueError):  # thrown when stream is empty
+            return min(self, key=key)
 
     def find(self, fn: Callable[[Any], bool]) -> Optional[Any]:
         return self.filter(fn).first()

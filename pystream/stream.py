@@ -100,6 +100,12 @@ class Stream:
         except StopIteration:
             return None
 
+    def nth(self, n: int) -> "Stream":
+        for item in self._iterable:
+            if n == 0:
+                return item
+            n -= 1
+
     def collect(self, collector: Callable[[Iterable], Iterable] = iter) -> Union[Sequence, Iterable, AbstractSet]:
         return collector(self._iterable)
 

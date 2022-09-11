@@ -1,5 +1,4 @@
 from .derive_unittest import TestCase
-import operator
 
 from pystream import Stream
 from .throw import throw

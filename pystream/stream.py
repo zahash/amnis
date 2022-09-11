@@ -95,10 +95,7 @@ class Stream:
         return self.apply(partial(_dropuntil, fn=fn))
 
     def first(self) -> Optional[Any]:
-        try:
-            return next(iter(self._iterable))
-        except StopIteration:
-            return None
+        return self.nth(0)
 
     def nth(self, n: int) -> Optional[Any]:
         for item in self._iterable:

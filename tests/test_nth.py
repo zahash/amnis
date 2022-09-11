@@ -10,6 +10,9 @@ class TestNth(unittest.TestCase):
         self.assertIsNone(Stream([]).nth(1))
         self.assertIsNone(Stream([]).nth(10))
 
+    def test_nth_singleton(self):
+        self.assertEqual(1, Stream([1]).nth(0))
+
     def test_nth_negative(self):
         self.assertIsNone(Stream([1, 2, 3]).nth(-1))
 

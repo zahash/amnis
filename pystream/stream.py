@@ -90,16 +90,16 @@ class Stream:
         return self.apply(partial(_skip, n=max(n, 0)))
 
     def takeuntil(self, fn: Callable[[Any], bool]) -> "Stream":
-        def _takeuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
+        def _takeuntil(iterable: Iterable) -> Iterable:
             for item in iterable:
                 if not fn(item):
                     break
                 yield item
 
-        return self.apply(partial(_takeuntil, fn=fn))
+        return self.apply(_takeuntil)
 
     def skipuntil(self, fn: Callable[[Any], bool]) -> "Stream":
-        def _skipuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
+        def _skipuntil(iterable: Iterable) -> Iterable:
             for item in iterable:
                 if not fn(item):
                     yield item
@@ -107,7 +107,7 @@ class Stream:
 
             yield from iterable
 
-        return self.apply(partial(_skipuntil, fn=fn))
+        return self.apply(_skipuntil)
 
     def first(self) -> Optional[Any]:
         return self.nth(0)

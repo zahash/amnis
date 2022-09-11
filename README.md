@@ -304,13 +304,13 @@ result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
 # [1, 2, 2, 4, 5]
 ```
 
-dropuntil
+skipuntil
 
 ```Python
 from pystream import Stream
 
 result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
-            .dropuntil(lambda x: x != 3) \
+            .skipuntil(lambda x: x != 3) \
             .collect(list)
 
 # [3, 2, 3, 5]

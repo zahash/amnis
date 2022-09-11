@@ -93,8 +93,8 @@ class Stream:
 
         return self.apply(partial(_takeuntil, fn=fn))
 
-    def dropuntil(self, fn: Callable[[Any], bool]) -> "Stream":
-        def _dropuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
+    def skipuntil(self, fn: Callable[[Any], bool]) -> "Stream":
+        def _skipuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
             it = iter(iterable)
 
             for item in it:
@@ -104,7 +104,7 @@ class Stream:
 
             yield from it
 
-        return self.apply(partial(_dropuntil, fn=fn))
+        return self.apply(partial(_skipuntil, fn=fn))
 
     def first(self) -> Optional[Any]:
         return self.nth(0)

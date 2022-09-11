@@ -100,7 +100,7 @@ class Stream:
         except StopIteration:
             return None
 
-    def nth(self, n: int) -> "Stream":
+    def nth(self, n: int) -> Optional[Any]:
         for item in self._iterable:
             if n == 0:
                 return item

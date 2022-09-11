@@ -22,21 +22,20 @@ class Stream:
         return Stream(fn(self._iterable))
 
     def catch(self, handler: Callable[[Any], Any], err_type=Exception) -> "Stream":
-        return self.apply(partial(self._catch, handler=handler, err_type=err_type))
+        def _catch(iterable: Iterable, handler: Callable[["Exception"], Any], err_type) -> Iterable:
+            it = iter(iterable)
+            while True:
+                try:
+                    item = next(it)
+                    yield item
+                except StopIteration:
+                    break
+                except err_type as ex:
+                    return_val = handler(ex)
+                    if return_val is not None:
+                        yield return_val
 
-    @staticmethod
-    def _catch(iterable: Iterable, handler: Callable[["Exception"], Any], err_type) -> Iterable:
-        it = iter(iterable)
-        while True:
-            try:
-                item = next(it)
-                yield item
-            except StopIteration:
-                break
-            except err_type as ex:
-                return_val = handler(ex)
-                if return_val is not None:
-                    yield return_val
+        return self.apply(partial(_catch, handler=handler, err_type=err_type))
 
     def map(self, fn: Callable[[Any], Any]) -> "Stream":
         return self.apply(partial(map, fn))
@@ -51,53 +50,49 @@ class Stream:
         return self.map(fn).flatten()
 
     def distinct(self) -> "Stream":
-        return self.apply(self._distinct)
+        def _distinct(iterable: Iterable) -> Iterable:
+            seen = set()
+            for item in iterable:
+                if item not in seen:
+                    yield item
+                    seen.add(item)
 
-    @staticmethod
-    def _distinct(iterable: Iterable) -> Iterable:
-        seen = set()
-        for item in iterable:
-            if item not in seen:
-                yield item
-                seen.add(item)
+        return self.apply(_distinct)
 
     def sorted(self) -> "Stream":
         return self.apply(sorted)
 
     def limit(self, n: int) -> "Stream":
-        return self.apply(partial(self._limit, n=max(n, 0)))
+        def _limit(iterable: Iterable, n: int) -> Iterable:
+            for item in iterable:
+                if n == 0:
+                    break
+                yield item
+                n -= 1
 
-    @staticmethod
-    def _limit(iterable: Iterable, n: int) -> Iterable:
-        for item in iterable:
-            if n == 0:
-                break
-            yield item
-            n -= 1
+        return self.apply(partial(_limit, n=max(n, 0)))
 
     def takeuntil(self, fn: Callable[[Any], bool]) -> "Stream":
-        return self.apply(partial(self._takeuntil, fn=fn))
+        def _takeuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
+            for item in iterable:
+                if not fn(item):
+                    break
+                yield item
 
-    @staticmethod
-    def _takeuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
-        for item in iterable:
-            if not fn(item):
-                break
-            yield item
+        return self.apply(partial(_takeuntil, fn=fn))
 
     def dropuntil(self, fn: Callable[[Any], bool]) -> "Stream":
-        return self.apply(partial(self._dropuntil, fn=fn))
+        def _dropuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
+            it = iter(iterable)
 
-    @staticmethod
-    def _dropuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
-        it = iter(iterable)
+            for item in it:
+                if not fn(item):
+                    yield item
+                    break
 
-        for item in it:
-            if not fn(item):
-                yield item
-                break
+            yield from it
 
-        yield from it
+        return self.apply(partial(_dropuntil, fn=fn))
 
     def first(self) -> Optional[Any]:
         try:

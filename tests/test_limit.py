@@ -1,11 +1,26 @@
-import unittest
+from .derive_unittest import TestCase
 import operator
 
 from pystream import Stream
 from .throw import throw
 
 
-class TestLimit(unittest.TestCase):
+class TestLimit(TestCase):
+    def test_limit_is_a_stream(self):
+        self.assertIsStream(Stream([1, 2, 3]).limit(2))
+
+    def test_limit_empty(self):
+        result = Stream([]).limit(10).collect(list)
+        self.assertListEqual([], result)
+
+    def test_limit_zero(self):
+        result = Stream([1, 2, 3]).limit(0).collect(list)
+        self.assertListEqual([], result)
+
+    def test_limit_negative(self):
+        result = Stream([1, 2, 3]).limit(-1).collect(list)
+        self.assertListEqual([], result)
+
     def test_limit(self):
         result = Stream(range(100)) \
             .limit(10) \
@@ -22,10 +37,3 @@ class TestLimit(unittest.TestCase):
             .collect(list)
 
         self.assertListEqual(list(range(10)), result)
-
-    def test_limit_with_reduce(self):
-        result = Stream(range(1, 100)) \
-            .limit(5) \
-            .reduce(operator.add)
-
-        self.assertEqual(15, result)

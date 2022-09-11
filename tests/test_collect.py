@@ -33,3 +33,9 @@ class TestCollect(unittest.TestCase):
             .collect(set)
 
         self.assertSetEqual({1, 2, 3}, result)
+
+    def test_collect_with_dict(self):
+        result = Stream([(1, 2), (3, 4)]) \
+            .collect(dict)
+
+        self.assertDictEqual({1: 2, 3: 4}, result)

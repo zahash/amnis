@@ -1,10 +1,16 @@
-import unittest
+from .derive_unittest import TestCase
 
 from pystream import Stream
 from .throw import throw
 
 
-class TestFlatMap(unittest.TestCase):
+class TestFlatMap(TestCase):
+    def test_flatmap_is_a_stream(self):
+        self.assertIsStream(
+            Stream(["it's Sunny in", "", "California"])
+            .flatmap(lambda s: s.split(" "))
+        )
+
     def test_flatmap(self):
         result = Stream(["it's Sunny in", "", "California"]) \
             .flatmap(lambda s: s.split(" ")) \

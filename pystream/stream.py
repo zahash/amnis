@@ -65,7 +65,7 @@ class Stream:
         return self.apply(sorted)
 
     def limit(self, n: int) -> "Stream":
-        return self.apply(partial(self._limit, n=n))
+        return self.apply(partial(self._limit, n=max(n, 0)))
 
     @staticmethod
     def _limit(iterable: Iterable, n: int) -> Iterable:

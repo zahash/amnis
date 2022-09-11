@@ -1,10 +1,13 @@
-import unittest
+from .derive_unittest import TestCase
 
 from pystream import Stream
 from .throw import throw
 
 
-class TestFilter(unittest.TestCase):
+class TestFilter(TestCase):
+    def test_filter_is_a_stream(self):
+        self.assertIsStream(Stream([1, 2, 3]).filter(lambda x: x > 1))
+
     def test_filter(self):
         result = Stream([1, 2, 3]) \
             .filter(lambda x: x > 1) \

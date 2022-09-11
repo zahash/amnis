@@ -10,17 +10,17 @@ class TestReduce(unittest.TestCase):
 
         self.assertIsNone(result)
 
-    def test_reduce_empty_with_initial(self):
-        result = Stream([]) \
-            .reduce(lambda x, y: x + y, initial=10)
-
-        self.assertEqual(10, result)
-
     def test_reduce_empty_with_zero_initial(self):
         result = Stream([]) \
             .reduce(lambda x, y: x + y, initial=0)
 
         self.assertEqual(0, result)
+
+    def test_reduce_empty_with_initial(self):
+        result = Stream([]) \
+            .reduce(lambda x, y: x + y, initial=10)
+
+        self.assertEqual(10, result)
 
     def test_reduce(self):
         result = Stream([1, 2, 3]) \

@@ -1,27 +1,19 @@
-import unittest
+from .derive_unittest import TestCase
 
 from pystream import Stream
 from .throw import throw
 
 
-class TestDistinct(unittest.TestCase):
+class TestDistinct(TestCase):
+    def test_distinct_is_a_stream(self):
+        self.assertIsStream(Stream([1, 1, 2, 3, 3, 2]).distinct())
+
     def test_distinct(self):
         result = Stream([1, 1, 2, 3, 3, 2]) \
             .distinct() \
-            .collect()
+            .collect(list)
 
-        self.assertEqual(1, next(result))
-        self.assertEqual(2, next(result))
-        self.assertEqual(3, next(result))
+        self.assertListEqual([1, 2, 3], result)
 
     def test_distinct_is_lazy(self):
         Stream([1, 1, 2, 3, 3, 2]).map(throw).distinct()
-
-    def test_distinct_with_map_filter(self):
-        result = Stream([1, 1, 2, 3, 3, 2]) \
-            .map(lambda x: x * 2) \
-            .distinct() \
-            .filter(lambda x: x > 0) \
-            .collect(list)
-
-        self.assertListEqual([2, 4, 6], result)

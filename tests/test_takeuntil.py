@@ -1,10 +1,16 @@
-import unittest
+from .derive_unittest import TestCase
 
 from pystream import Stream
 from .throw import throw
 
 
-class TestTakeUntil(unittest.TestCase):
+class TestTakeUntil(TestCase):
+    def test_takeuntil_is_a_stream(self):
+        self.assertIsStream(
+            Stream([1, 2, 2, 4, 5, 3, 2, 3, 5])
+            .takeuntil(lambda x: x != 3)
+        )
+
     def test_takeuntil(self):
         result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
             .takeuntil(lambda x: x != 3) \

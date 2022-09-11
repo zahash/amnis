@@ -19,7 +19,7 @@ class Stream:
         return iter(self._iterable)
 
     def apply(self, fn: Callable[[Iterable], Iterable]) -> "Stream":
-        return Stream(fn(self._iterable))
+        return Stream(fn(self))
 
     def catch(self, handler: Callable[[Any], Any], err_type=Exception) -> "Stream":
         def _catch(iterable: Iterable, handler: Callable[["Exception"], Any], err_type) -> Iterable:
@@ -110,36 +110,36 @@ class Stream:
         return self.nth(0)
 
     def nth(self, n: int) -> Optional[Any]:
-        for item in self._iterable:
+        for item in self:
             if n == 0:
                 return item
             n -= 1
 
     def last(self) -> Optional[Any]:
         last_item = None
-        for item in self._iterable:
+        for item in self:
             last_item = item
         return last_item
 
     def collect(self, collector: Callable[[Iterable], Iterable] = iter) -> Union[Sequence, Iterable, AbstractSet]:
-        return collector(self._iterable)
+        return collector(self)
 
     def reduce(self, fn: Callable[[Any, Any], Any], initial=None) -> Optional[Any]:
         try:
-            return reduce(fn, self._iterable, initial) if initial is not None else reduce(fn, self._iterable)
+            return reduce(fn, self, initial) if initial is not None else reduce(fn, self)
         except TypeError:  # thrown when stream is empty without initial value
             return None
 
     def max(self, key: Callable[[Any], Any] = lambda x: x) -> Optional[Any]:
         _max = None
-        for item in self._iterable:
+        for item in self:
             if _max is None or key(item) > key(_max):
                 _max = item
         return _max
 
     def min(self, key: Callable[[Any], Any] = lambda x: x) -> Optional[Any]:
         _min = None
-        for item in self._iterable:
+        for item in self:
             if _min is None or key(item) < key(_min):
                 _min = item
         return _min
@@ -148,12 +148,12 @@ class Stream:
         return self.filter(fn).first()
 
     def foreach(self, fn: Callable[[Iterable], None]) -> None:
-        for item in self._iterable:
+        for item in self:
             fn(item)
 
     def group(self, key_fn: Callable[[Any], Any], val_fn: Callable[[Any], Any], grouper: Grouper) -> dict:
         d = defaultdict(grouper.collection)
-        for item in self._iterable:
+        for item in self:
             key, val = key_fn(item), val_fn(item)
             return_val = grouper.grouper_fn(d[key], val)
             # if there is no return value then it is assumed that the operation is performed inplace
@@ -165,13 +165,13 @@ class Stream:
         return dict(d)
 
     def allmatch(self, fn: Callable[[Any], bool]) -> bool:
-        return all(fn(item) for item in self._iterable)
+        return all(fn(item) for item in self)
 
     def anymatch(self, fn: Callable[[Any], bool]) -> bool:
-        return any(fn(item) for item in self._iterable)
+        return any(fn(item) for item in self)
 
     def count(self) -> int:
         size = 0
-        for _ in self._iterable:
+        for _ in self:
             size += 1
         return size

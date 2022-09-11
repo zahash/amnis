@@ -20,6 +20,10 @@ class TestLimit(TestCase):
         result = Stream([1, 2, 3]).limit(-1).collect(list)
         self.assertListEqual([], result)
 
+    def test_limit_singleton(self):
+        result = Stream([1]).limit(1).collect(list)
+        self.assertListEqual([1], result)
+
     def test_limit(self):
         result = Stream(range(100)) \
             .limit(10) \

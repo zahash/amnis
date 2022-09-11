@@ -72,6 +72,18 @@ class Stream:
 
         return self.apply(partial(_limit, n=max(n, 0)))
 
+    def skip(self, n: int) -> "Stream":
+        def _skip(iterable: Iterable, n: int) -> Iterable:
+            it = iter(iterable)
+            for item in it:
+                if n == 0:
+                    yield item
+                    break
+                n -= 1
+            yield from it
+
+        return self.apply(partial(_skip, n=max(n, 0)))
+
     def takeuntil(self, fn: Callable[[Any], bool]) -> "Stream":
         def _takeuntil(iterable: Iterable, fn: Callable[[Any], bool]) -> Iterable:
             for item in iterable:

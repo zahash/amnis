@@ -1,3 +1,7 @@
+# pip3 install setuptools twine
+# python3 setup.py sdist bdist_wheel
+# twine upload dist/*
+
 import pathlib
 from setuptools import setup
 
@@ -11,7 +15,7 @@ with (HERE / "requirements.txt").open() as f:
 
 setup(
     name="amnis",
-    version="0.1.0",
+    version="0.1.1",
     description="Java like Stream Api for Python",
     long_description=README,
     long_description_content_type="text/markdown",

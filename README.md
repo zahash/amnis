@@ -13,13 +13,13 @@ pip install this repo.
 (Note: Incompatible with Python 2.x)
 
 ```sh
-pip3 install git+https://github.com/zahash/amnis.git
+pip3 install amnis
 ```
 
 (or)
 
 ```sh
-pip install git+https://github.com/zahash/amnis.git
+pip install amnis
 ```
 
 ## Usage examples

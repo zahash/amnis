@@ -4,8 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Python package for Java like Streams. Streams are lazy evaluated -- That is, evaluation starts only when a terminal
-operation is applied
+Python package for Java like Streams. Streams are lazy evaluated -- That is, evaluation starts only when a terminal operation is applied
 
 ## Installation
 

@@ -15,7 +15,7 @@ with (HERE / "requirements.txt").open() as f:
 
 setup(
     name="amnis",
-    version="0.1.2",
+    version="0.1.3",
     description="Java like Stream Api for Python",
     long_description=README,
     long_description_content_type="text/markdown",

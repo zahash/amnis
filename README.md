@@ -24,38 +24,38 @@ pip install git+https://github.com/zahash/pystream.git
 
 ## Usage examples
 
-map
+### map
 
 ```Python
 from pystream import Stream
 
-result = Stream([1, 2, 3]) \
-    .map(lambda x: x * 2) \
-    .collect(list)
+result = (Stream([1, 2, 3])
+    .map(lambda x: x * 2)
+    .collect(list))
 
 # [2, 4, 6]
 ```
 
-filter
+### filter
 
 ```Python
 from pystream import Stream
 
-result = Stream([1, 2, 3]) \
-    .filter(lambda x: x > 1) \
-    .collect(list)
+result = (Stream([1, 2, 3])
+    .filter(lambda x: x > 1)
+    .collect(list))
 
 # [2, 3]
 ```
 
-reduce
+### reduce
 
 ```Python
 from pystream import Stream
 import operator
 
-result = Stream([1, 2, 3]) \
-    .reduce(operator.add, initial=20)
+result = (Stream([1, 2, 3])
+    .reduce(operator.add, initial=20))
 
 # 26
 ```
@@ -63,26 +63,26 @@ result = Stream([1, 2, 3]) \
 ```Python
 from pystream import Stream
 
-result = Stream([1, 2, 3]) \
-    .reduce(lambda x, y: x + y, initial=20)
+result = (Stream([1, 2, 3])
+    .reduce(lambda x, y: x + y, initial=20))
 
 # 26
 ```
 
-map, filter and reduce
+### map, filter and reduce
 
 ```Python
 from pystream import Stream
 
-result = Stream([1, 2, 3]) \
-    .map(lambda x: x * 2) \
-    .filter(lambda x: x > 2) \
-    .reduce(lambda x, y: x + y, initial=0)
+result = (Stream([1, 2, 3])
+    .map(lambda x: x * 2)
+    .filter(lambda x: x > 2)
+    .reduce(lambda x, y: x + y, initial=0))
 
 # 10
 ```
 
-iterate
+### iterate
 
 ```Python
 from pystream import Stream
@@ -96,14 +96,14 @@ for n in stream:
 # [1, 2, 3]
 ```
 
-iterate with map, filter
+### iterate with map, filter
 
 ```Python
 from pystream import Stream
 
-stream = Stream([1, 2, 3]) \
-    .map(lambda x: x * 2) \
-    .filter(lambda x: x > 2)
+stream = (Stream([1, 2, 3])
+    .map(lambda x: x * 2)
+    .filter(lambda x: x > 2))
 
 result = []
 for n in stream:
@@ -112,30 +112,30 @@ for n in stream:
 # [4, 6]
 ```
 
-flatten
+### flatten
 
 ```Python
 from pystream import Stream
 
-result = Stream([
+result = (Stream([
             [1, 2, 3],
             [],
             [4, 5]
-        ]) \
-            .flatten() \
-            .collect(list)
+        ])
+            .flatten()
+            .collect(list))
 
 # [1, 2, 3, 4, 5]
 ```
 
-flatmap
+### flatmap
 
 ```Python
 from pystream import Stream
 
-result = Stream(["it's Sunny in", "", "California"]) \
-            .flatmap(lambda s: s.split(" ")) \
-            .collect(list)
+result = (Stream(["it's Sunny in", "", "California"])
+            .flatmap(lambda s: s.split(" "))
+            .collect(list))
 
 # ["it's", "Sunny", "in", "", "California"]
 ```
@@ -145,32 +145,30 @@ flatmap is exactly the same as doing map and flatten
 ```Python
 from pystream import Stream
 
-result = Stream(["it's Sunny in", "", "California"]) \
-            .map(lambda s: s.split(" ")) \
-            .flatten() \
-            .collect(list)
+result = (Stream(["it's Sunny in", "", "California"])
+            .map(lambda s: s.split(" "))
+            .flatten()
+            .collect(list))
 
 # ["it's", "Sunny", "in", "", "California"]
 ```
 
-first
+### first
 
 ```Python
 from pystream import Stream
 
-result = Stream([1, 2, 3]) \
-    .first()
+result = Stream([1, 2, 3]).first()
 
 # 1
 ```
 
-foreach
+### foreach
 
 ```Python
 from pystream import Stream
 
-Stream([1, 2, 3]) \
-    .foreach(print)
+Stream([1, 2, 3]).foreach(print)
 
 # >>> 1
 # >>> 2
@@ -180,27 +178,26 @@ Stream([1, 2, 3]) \
 ```Python
 from pystream import Stream
 
-Stream([1, 2, 3]) \
-    .foreach(lambda i: print(i))
+Stream([1, 2, 3]).foreach(lambda n: print(n))
 
 # >>> 1
 # >>> 2
 # >>> 3
 ```
 
-distinct
+### distinct
 
 ```Python
 from pystream import Stream
 
-result = Stream([3, 2, 3, 1, 3, 2, 2]) \
-    .distinct() \
-    .collect(list)
+result = (Stream([3, 2, 3, 1, 3, 2, 2])
+    .distinct()
+    .collect(list))
 
 # [3, 2, 1]
 ```
 
-group with list
+### group with list
 
 ```Python
 from pystream import Stream, Grouper
@@ -215,12 +212,12 @@ people = [
     Person("jill", 25)
 ]
 
-result = Stream(people) \
+result = (Stream(people)
             .group(
                 key_fn=lambda p: p.name,
                 val_fn=lambda p: p.age,
                 grouper=Grouper(list, grouper_fn=lambda l, item: l.append(item))
-            )
+            ))
 
 # {
 #   "jack": [20, 30],
@@ -228,7 +225,7 @@ result = Stream(people) \
 # }
 ```
 
-group with string
+### group with string
 
 ```Python
 from pystream import Stream, Grouper
@@ -244,12 +241,12 @@ people = [
     Person("jack", 40)
 ]
 
-result = Stream(people) \
+result = (Stream(people)
             .group(
                 key_fn=lambda p: p.name,
                 val_fn=lambda p: p.age,
                 grouper=Grouper(str, grouper_fn=lambda s, item: f"{s}--{item}" if s else f"{item}")
-            )
+            ))
 
 # {
 #   "jack": "20--30--40",
@@ -257,72 +254,72 @@ result = Stream(people) \
 # }
 ```
 
-sorted
+### sorted
 
 ```Python
 from pystream import Stream
 
-result = Stream([5, 4, 3, 2, 1]) \
-            .sorted() \
-            .collect(list)
+# Warning: .sorted() is not lazy
+result = (Stream([5, 4, 3, 2, 1])
+            .sorted()
+            .collect(list))
 
 # [1, 2, 3, 4, 5]
 ```
 
-limit
+### limit
 
 ```Python
 from pystream import Stream
 
-result = Stream(range(100)) \
-    .limit(10) \
-    .collect(list)
+result = (Stream(range(100))
+    .limit(10)
+    .collect(list))
 
 # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
 
-count
+### count
 
 ```Python
 from pystream import Stream
 
-result = Stream(['a', 'b', 'c']) \
-            .count()
+result = Stream(['a', 'b', 'c']).count()
 
 # 3
 ```
 
-takeuntil
+### takeuntil
 
 ```Python
 from pystream import Stream
 
-result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
-            .takeuntil(lambda x: x != 3) \
-            .collect(list)
+result = (Stream([1, 2, 2, 4, 5, 3, 2, 3, 5])
+            .takeuntil(lambda x: x != 3)
+            .collect(list))
 
 # [1, 2, 2, 4, 5]
 ```
 
-skipuntil
+### skipuntil
 
 ```Python
 from pystream import Stream
 
-result = Stream([1, 2, 2, 4, 5, 3, 2, 3, 5]) \
-            .skipuntil(lambda x: x != 3) \
-            .collect(list)
+result = (Stream([1, 2, 2, 4, 5, 3, 2, 3, 5])
+            .skipuntil(lambda x: x != 3)
+            .collect(list))
 
 # [3, 2, 3, 5]
 ```
 
-allmatch
+### allmatch
 
 ```Python
 from pystream import Stream
 
-result = Stream(["cat", "fat", "rat"]) \
-            .allmatch(lambda x: "at" in x)
+result = (Stream(["cat", "fat", "rat"])
+            .allmatch(lambda x: "at" in x))
 
 # True
 ```
@@ -330,19 +327,19 @@ result = Stream(["cat", "fat", "rat"]) \
 ```Python
 from pystream import Stream
 
-result = Stream(["cat", "dog", "rat"]) \
-            .allmatch(lambda x: "at" in x)
+result = (Stream(["cat", "dog", "rat"])
+            .allmatch(lambda x: "at" in x))
 
 # False
 ```
 
-anymatch
+### anymatch
 
 ```Python
 from pystream import Stream
 
-result = Stream(["cat", "dog", "rat"]) \
-            .anymatch(lambda x: "at" in x)
+result = (Stream(["cat", "dog", "rat"])
+            .anymatch(lambda x: "at" in x))
 
 # True
 ```
@@ -350,13 +347,13 @@ result = Stream(["cat", "dog", "rat"]) \
 ```Python
 from pystream import Stream
 
-result = Stream(["cat", "dog", "rat"]) \
-            .anymatch(lambda x: "z" in x)
+result = (Stream(["cat", "dog", "rat"])
+            .anymatch(lambda x: "z" in x))
 
 # False
 ```
 
-error handling
+### error handling
 
 ```Python
 from pystream import Stream
@@ -365,16 +362,16 @@ import logging
 def handler(err):
     logging.error(err)
 
-result = Stream(['a', 'b', 'c', 10, 'd']) \
-    .map(lambda x: x.upper()) \
-    .catch(handler) \
-    .collect(list)
+result = (Stream(['a', 'b', 'c', 10, 'd'])
+    .map(lambda x: x.upper())
+    .catch(handler)
+    .collect(list))
 
 # >>> ERROR:root:'int' object has no attribute 'upper'
 # result = ['A', 'B', 'C', 'D']
 ```
 
-multiple error handling
+### multiple error handling
 
 ```Python
 from pystream import Stream
@@ -386,19 +383,19 @@ def handle_upper(err):
 def handle_index_out_of_bounds(err):
     logging.warning(err)
 
-result = Stream(['ab', 'cd', 'e', 10, 'fg']) \
-    .map(lambda x: x.upper()) \
-    .catch(handle_upper) \
-    .map(lambda x: x[1]) \
-    .catch(handle_index_out_of_bounds) \
-    .collect(list)
+result = (Stream(['ab', 'cd', 'e', 10, 'fg'])
+    .map(lambda x: x.upper())
+    .catch(handle_upper)
+    .map(lambda x: x[1])
+    .catch(handle_index_out_of_bounds)
+    .collect(list))
 
 # >>> WARNING:root:string index out of range
 # >>> ERROR:root:'int' object has no attribute 'upper'
 # result = ['B', 'D', 'G']
 ```
 
-replace error value
+### replace error value
 
 ```Python
 from pystream import Stream
@@ -412,15 +409,15 @@ def handler_neg_sqrt(err):
     (value,) = err.args
     return value * 1000
 
-result = Stream([4, 9, -3, 16]) \
-    .map(sqrt) \
-    .catch(handler_neg_sqrt) \
-    .collect(list)
+result = (Stream([4, 9, -3, 16])
+    .map(sqrt)
+    .catch(handler_neg_sqrt)
+    .collect(list))
 
 # [2.0, 3.0, -3000, 4.0]
 ```
 
-specific error handling
+### specific error handling
 
 ```Python
 def err_fn(x):
@@ -438,11 +435,11 @@ def handle_key_err(err):
     (value,) = err.args
     return value * 4
 
-result = Stream(['e', 'a', 'g', 'd', 'b']) \
-    .map(err_fn) \
-    .catch(handle_value_err, ValueError) \
-    .catch(handle_key_err, KeyError) \
-    .collect(list)
+result = (Stream(['e', 'a', 'g', 'd', 'b'])
+    .map(err_fn)
+    .catch(handle_value_err, ValueError)
+    .catch(handle_key_err, KeyError)
+    .collect(list))
 
 # ['e', 'aa', 'g', 'd', 'bbbb']
 ```

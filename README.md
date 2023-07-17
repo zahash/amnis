@@ -1,10 +1,10 @@
-# pystream
+# amnis
 
 > Java like Streams Api for Python
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Python package for Java like Streams. pystreams are lazy evaluated -- That is, evaluation starts only when a terminal
+Python package for Java like Streams. Streams are lazy evaluated -- That is, evaluation starts only when a terminal
 operation is applied
 
 ## Installation
@@ -27,7 +27,7 @@ pip install git+https://github.com/zahash/pystream.git
 ### map
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream([1, 2, 3])
     .map(lambda x: x * 2)
@@ -39,7 +39,7 @@ result = (Stream([1, 2, 3])
 ### filter
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream([1, 2, 3])
     .filter(lambda x: x > 1)
@@ -51,7 +51,7 @@ result = (Stream([1, 2, 3])
 ### reduce
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 import operator
 
 result = (Stream([1, 2, 3])
@@ -61,7 +61,7 @@ result = (Stream([1, 2, 3])
 ```
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream([1, 2, 3])
     .reduce(lambda x, y: x + y, initial=20))
@@ -72,7 +72,7 @@ result = (Stream([1, 2, 3])
 ### map, filter and reduce
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream([1, 2, 3])
     .map(lambda x: x * 2)
@@ -85,7 +85,7 @@ result = (Stream([1, 2, 3])
 ### iterate
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 stream = Stream([1, 2, 3])
 
@@ -99,7 +99,7 @@ for n in stream:
 ### iterate with map, filter
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 stream = (Stream([1, 2, 3])
     .map(lambda x: x * 2)
@@ -115,7 +115,7 @@ for n in stream:
 ### flatten
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream([
             [1, 2, 3],
@@ -131,7 +131,7 @@ result = (Stream([
 ### flatmap
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream(["it's Sunny in", "", "California"])
             .flatmap(lambda s: s.split(" "))
@@ -143,7 +143,7 @@ result = (Stream(["it's Sunny in", "", "California"])
 flatmap is exactly the same as doing map and flatten
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream(["it's Sunny in", "", "California"])
             .map(lambda s: s.split(" "))
@@ -156,7 +156,7 @@ result = (Stream(["it's Sunny in", "", "California"])
 ### first
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = Stream([1, 2, 3]).first()
 
@@ -166,7 +166,7 @@ result = Stream([1, 2, 3]).first()
 ### foreach
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 Stream([1, 2, 3]).foreach(print)
 
@@ -176,7 +176,7 @@ Stream([1, 2, 3]).foreach(print)
 ```
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 Stream([1, 2, 3]).foreach(lambda n: print(n))
 
@@ -188,7 +188,7 @@ Stream([1, 2, 3]).foreach(lambda n: print(n))
 ### distinct
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream([3, 2, 3, 1, 3, 2, 2])
     .distinct()
@@ -200,7 +200,7 @@ result = (Stream([3, 2, 3, 1, 3, 2, 2])
 ### group with list
 
 ```Python
-from pystream import Stream, Grouper
+from amnis import Stream, Grouper
 
 class Person:
     def __init__(self, name, age):
@@ -228,7 +228,7 @@ result = (Stream(people)
 ### group with string
 
 ```Python
-from pystream import Stream, Grouper
+from amnis import Stream, Grouper
 
 class Person:
     def __init__(self, name, age):
@@ -257,7 +257,7 @@ result = (Stream(people)
 ### sorted
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 # Warning: .sorted() is not lazy
 result = (Stream([5, 4, 3, 2, 1])
@@ -270,7 +270,7 @@ result = (Stream([5, 4, 3, 2, 1])
 ### limit
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream(range(100))
     .limit(10)
@@ -282,7 +282,7 @@ result = (Stream(range(100))
 ### count
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = Stream(['a', 'b', 'c']).count()
 
@@ -292,7 +292,7 @@ result = Stream(['a', 'b', 'c']).count()
 ### takeuntil
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream([1, 2, 2, 4, 5, 3, 2, 3, 5])
             .takeuntil(lambda x: x != 3)
@@ -304,7 +304,7 @@ result = (Stream([1, 2, 2, 4, 5, 3, 2, 3, 5])
 ### skipuntil
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream([1, 2, 2, 4, 5, 3, 2, 3, 5])
             .skipuntil(lambda x: x != 3)
@@ -316,7 +316,7 @@ result = (Stream([1, 2, 2, 4, 5, 3, 2, 3, 5])
 ### allmatch
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream(["cat", "fat", "rat"])
             .allmatch(lambda x: "at" in x))
@@ -325,7 +325,7 @@ result = (Stream(["cat", "fat", "rat"])
 ```
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream(["cat", "dog", "rat"])
             .allmatch(lambda x: "at" in x))
@@ -336,7 +336,7 @@ result = (Stream(["cat", "dog", "rat"])
 ### anymatch
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream(["cat", "dog", "rat"])
             .anymatch(lambda x: "at" in x))
@@ -345,7 +345,7 @@ result = (Stream(["cat", "dog", "rat"])
 ```
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 result = (Stream(["cat", "dog", "rat"])
             .anymatch(lambda x: "z" in x))
@@ -356,7 +356,7 @@ result = (Stream(["cat", "dog", "rat"])
 ### error handling
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 import logging
 
 def handler(err):
@@ -374,7 +374,7 @@ result = (Stream(['a', 'b', 'c', 10, 'd'])
 ### multiple error handling
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 import logging
 
 def handle_upper(err):
@@ -398,7 +398,7 @@ result = (Stream(['ab', 'cd', 'e', 10, 'fg'])
 ### replace error value
 
 ```Python
-from pystream import Stream
+from amnis import Stream
 
 def sqrt(x):
     if x < 0:
@@ -462,7 +462,7 @@ Distributed under the MIT license. See `LICENSE` for more information.
 
 ## Contributing
 
-1. Fork it (<https://github.com/zahash/pystream/fork>)
+1. Fork it (<https://github.com/zahash/amnis/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)

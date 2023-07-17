@@ -1,6 +1,6 @@
 from .derive_unittest import TestCase
 
-from pystream import Stream
+from amnis import Stream
 from .throw import throw
 
 

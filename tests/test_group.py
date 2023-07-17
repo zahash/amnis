@@ -1,7 +1,7 @@
 import unittest
 from collections import namedtuple
 
-from pystream import Stream, Grouper
+from amnis import Stream, Grouper
 
 Person = namedtuple("Person", ["name", "age"])
 

@@ -1,7 +1,7 @@
 import unittest
 from typing import Iterable
 
-from pystream import Stream
+from amnis import Stream
 
 
 class TestStream(unittest.TestCase):

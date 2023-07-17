@@ -10,12 +10,12 @@ with (HERE / "requirements.txt").open() as f:
     requirements = f.read().splitlines()
 
 setup(
-    name="pystream",
+    name="amnis",
     version="0.1.0",
-    description="Java like Stream pystream for Python",
+    description="Java like Stream Api for Python",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/zahash/pystream",
+    url="https://github.com/zahash/amnis",
     author="zahash",
     author_email="zahash.z@gmail.com",
     license="MIT",
@@ -24,7 +24,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
     ],
-    packages=["pystream"],
+    packages=["amnis"],
     include_package_data=True,
     install_requires=requirements,
 )

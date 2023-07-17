@@ -1,6 +1,6 @@
 import unittest
 
-from pystream import Stream
+from amnis import Stream
 
 
 class TestLast(unittest.TestCase):

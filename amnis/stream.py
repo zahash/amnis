@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 from contextlib import suppress
 from functools import reduce, partial
 from typing import *
@@ -270,6 +270,41 @@ class Stream(Generic[T]):
                 fn(item)
                 yield item
         return self.apply(_inspect)
+
+    def window(self, window_size: int) -> "Stream[Tuple[T, ...]]":
+        """
+        Create a sliding window over the stream.
+
+        This method returns a new Stream where each element is a tuple containing the elements
+        of the original stream that form a sliding window of the specified size `window_size`.
+        The elements within each window are ordered as they appear in the stream.
+
+        ```Python
+        from amnis import Stream
+
+        result = Stream([1, 2, 3, 4, 5]).window(3).collect(list)
+
+        # [
+        #     (1, 2, 3),
+        #     (2, 3, 4),
+        #     (3, 4, 5),
+        # ]
+
+        result = Stream([1, 2, 3, 4, 5]).window(3).map(lambda w: w[0]+w[1]+w[2]).collect(list)
+
+        # [6, 9, 12]
+        ```
+        """
+        def _window(iterable: Iterable[T]) -> Iterable[List[T]]:
+            buffer = deque(maxlen=window_size)
+            for item in iterable:
+                buffer.append(item)
+                if len(buffer) == window_size:
+                    yield tuple(buffer)
+
+        if window_size <= 0:
+            return Stream([])
+        return self.apply(partial(_window))
 
     def distinct(self) -> "Stream[T]":
         """

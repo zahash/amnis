@@ -691,6 +691,31 @@ result = (Stream([1, 2, 2, 4, 5, 3, 2, 3, 5])
 ```
 
 
+## `window`
+
+Create a sliding window over the stream.
+
+This method returns a new Stream where each element is a tuple containing the elements
+of the original stream that form a sliding window of the specified size `window_size`.
+The elements within each window are ordered as they appear in the stream.
+
+```Python
+from amnis import Stream
+
+result = Stream([1, 2, 3, 4, 5]).window(3).collect(list)
+
+# [
+#     (1, 2, 3),
+#     (2, 3, 4),
+#     (3, 4, 5),
+# ]
+
+result = Stream([1, 2, 3, 4, 5]).window(3).map(lambda w: w[0]+w[1]+w[2]).collect(list)
+
+# [6, 9, 12]
+```
+
+
 
 ## Development setup
 

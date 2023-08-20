@@ -26,7 +26,6 @@ class TestSkip(TestCase):
 
     def test_skip(self):
         result = Stream(range(100)).skip(10).collect(list)
-
         self.assertListEqual(list(range(10, 100)), result)
 
     def test_skip_is_lazy(self):
@@ -34,5 +33,4 @@ class TestSkip(TestCase):
 
     def test_skip_excess(self):
         result = Stream(range(10)).skip(100).collect(list)
-
         self.assertListEqual([], result)

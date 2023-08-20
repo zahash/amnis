@@ -538,6 +538,29 @@ result = Stream(["cc", "aaaaa", "b"]).min(lambda x: len(x))
 ```
 
 
+## `nomatch`
+
+Check if no elements in the stream match a condition.
+
+This method returns `True` if none of the elements in the stream satisfy the condition
+defined by the provided function `fn`. If any element satisfies the condition, `False`
+is returned.
+
+```Python
+from amnis import Stream
+
+result = (Stream([3, 5, 7])
+          .nomatch(lambda x: x % 2 == 0))
+
+# True
+
+result = (Stream([3, 4, 7])
+          .nomatch(lambda x: x % 2 == 0))
+
+# False
+```
+
+
 ## `nth`
 
 Get the element at the nth position in the stream.

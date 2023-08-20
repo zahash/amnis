@@ -745,6 +745,30 @@ class Stream(Generic[T]):
         """
         return any(fn(item) for item in self)
 
+    def nomatch(self, fn: Callable[[T], bool]) -> bool:
+        """
+        Check if no elements in the stream match a condition.
+
+        This method returns `True` if none of the elements in the stream satisfy the condition
+        defined by the provided function `fn`. If any element satisfies the condition, `False`
+        is returned.
+
+        ```Python
+        from amnis import Stream
+
+        result = (Stream([3, 5, 7])
+                  .nomatch(lambda x: x % 2 == 0))
+
+        # True
+
+        result = (Stream([3, 4, 7])
+                  .nomatch(lambda x: x % 2 == 0))
+
+        # False
+        ```
+        """
+        return not any(fn(item) for item in self)
+
     def count(self) -> int:
         """
         Count the number of elements in the stream.

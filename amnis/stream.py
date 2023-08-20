@@ -238,6 +238,39 @@ class Stream(Generic[T]):
         """
         return self.map(fn).flatten()
 
+    def inspect(self, fn: Callable[[T], None]) -> "Stream[T]":
+        """
+        Apply a function to each element in the stream while preserving the stream's contents.
+
+        This method returns a new Stream that applies the provided function `fn` to each
+        element in the original stream. The function is called for every element, and it can
+        have side effects. The original elements remain unchanged, and the new Stream still
+        contains the same elements.
+
+        ```Python
+        from amnis import Stream
+
+        result = (Stream([1, 2, 3])
+                  .inspect(lambda x: print(f"before map : {x}"))
+                  .map(lambda x: x * 3)
+                  .inspect(lambda x: print(f"after map  : {x}"))
+                  .collect(list))
+
+        # >>> before map : 1
+        # >>> after map  : 3
+        # >>> before map : 2
+        # >>> after map  : 6
+        # >>> before map : 3
+        # >>> after map  : 9
+        # result = [3, 6, 9]
+        ```
+        """
+        def _inspect(iterable: Iterable[T]) -> Iterable[T]:
+            for item in iterable:
+                fn(item)
+                yield item
+        return self.apply(_inspect)
+
     def distinct(self) -> "Stream[T]":
         """
         Remove duplicate elements from the stream.

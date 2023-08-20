@@ -72,11 +72,14 @@ def generate_readme():
         write_line()
         for method_name, method in inspect.getmembers(Stream, inspect.isfunction):
             if method.__doc__:
+                write_line()
                 write_line(f"## `{method_name}`")
                 write_line()
 
                 for line in inspect.cleandoc(method.__doc__).splitlines():
                     write_line(f"{line}")
+
+                write_line()
 
         write_line()
         write_line(SUFFIX)

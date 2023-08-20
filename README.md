@@ -29,6 +29,7 @@ pip install amnis
 
 # Usage examples
 
+
 ## `allmatch`
 
 Check if all elements in the stream match a condition.
@@ -50,6 +51,8 @@ result = (Stream(["cat", "dog", "rat"])
 
 # False
 ```
+
+
 ## `anymatch`
 
 Check if any element in the stream matches a condition.
@@ -71,6 +74,8 @@ result = (Stream(["cat", "dog", "rat"])
 
 # False
 ```
+
+
 ## `catch`
 
 Handle exceptions while iterating through the stream.
@@ -182,6 +187,8 @@ result = (Stream(['e', 'a', 'g', 'd', 'b'])
 
 # ['e', 'aa', 'g', 'd', 'bbbb']
 ```
+
+
 ## `collect`
 
 Collect the elements in the stream into a collection.
@@ -197,6 +204,8 @@ result = Stream([1, 2, 3]).collect(list)
 
 # [1, 2, 3]
 ```
+
+
 ## `count`
 
 Count the number of elements in the stream.
@@ -210,6 +219,8 @@ result = Stream(['a', 'b', 'c']).count()
 
 # 3
 ```
+
+
 ## `distinct`
 
 Remove duplicate elements from the stream.
@@ -227,6 +238,8 @@ result = (Stream([3, 2, 3, 1, 3, 2, 2])
 
 # [3, 2, 1]
 ```        
+
+
 ## `filter`
 
 Filter elements in the stream based on a given condition.
@@ -243,6 +256,8 @@ result = (Stream([1, 2, 3])
 
 # [2, 3]
 ```        
+
+
 ## `find`
 
 Find the first element that matches a condition in the stream.
@@ -257,6 +272,8 @@ result = Stream([5, 4, 3, 2, 1]).find(lambda x: x % 2 == 0)
 
 # 4
 ```
+
+
 ## `first`
 
 Get the first element from the stream.
@@ -270,6 +287,8 @@ result = Stream([1, 2, 3]).first()
 
 # 1
 ```
+
+
 ## `flatmap`
 
 Apply a function to each element and flatten the results into a single stream.
@@ -288,6 +307,8 @@ result = (Stream(["it's Sunny in", "", "California"])
 
 # ["it's", "Sunny", "in", "", "California"]
 ```
+
+
 ## `flatten`
 
 Flatten a stream of nested iterables into a single stream.
@@ -308,6 +329,8 @@ result = (Stream([
 
 # [1, 2, 3, 4, 5]
 ```
+
+
 ## `foreach`
 
 Apply a function to each element in the stream.
@@ -324,6 +347,8 @@ Stream([1, 2, 3]).foreach(lambda x: print(x))
 # >>> 2
 # >>> 3
 ```
+
+
 ## `group`
 
 Group elements in the stream based on keys and values.
@@ -391,6 +416,36 @@ result = (Stream(people)
 #   "jill": "25"
 # }
 ```
+
+
+## `inspect`
+
+Apply a function to each element in the stream while preserving the stream's contents.
+
+This method returns a new Stream that applies the provided function `fn` to each
+element in the original stream. The function is called for every element, and it can
+have side effects. The original elements remain unchanged, and the new Stream still
+contains the same elements.
+
+```Python
+from amnis import Stream
+
+result = (Stream([1, 2, 3])
+          .inspect(lambda x: print(f"before map : {x}"))
+          .map(lambda x: x * 3)
+          .inspect(lambda x: print(f"after map  : {x}"))
+          .collect(list))
+
+# >>> before map : 1
+# >>> after map  : 3
+# >>> before map : 2
+# >>> after map  : 6
+# >>> before map : 3
+# >>> after map  : 9
+# result = [3, 6, 9]
+```
+
+
 ## `last`
 
 Get the last element from the stream.
@@ -404,6 +459,8 @@ result = Stream([1, 2, 3]).last()
 
 # 3
 ```
+
+
 ## `limit`
 
 Limit the number of elements in the stream.
@@ -421,6 +478,8 @@ result = (Stream(range(100))
 
 # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ```
+
+
 ## `map`
 
 Apply a function to each element in the stream.
@@ -437,6 +496,8 @@ result = (Stream([1, 2, 3])
 
 # [2, 4, 6]
 ```
+
+
 ## `max`
 
 Find the maximum element in the stream.
@@ -455,6 +516,8 @@ result = Stream(["a", "bbbbb", "cc"]).max(lambda x: len(x))
 
 # "bbbbb"
 ```
+
+
 ## `min`
 
 Find the minimum element in the stream.
@@ -473,6 +536,8 @@ result = Stream(["cc", "aaaaa", "b"]).min(lambda x: len(x))
 
 # "b"
 ```
+
+
 ## `nth`
 
 Get the element at the nth position in the stream.
@@ -488,6 +553,8 @@ result = Stream([1, 2, 3]).nth(1)
 
 # 2
 ```
+
+
 ## `reduce`
 
 Reduce the elements in the stream to a single value.
@@ -512,6 +579,8 @@ result = (Stream([1, 2, 3])
 
 # 26
 ```
+
+
 ## `skip`
 
 Skip the first `n` elements in the stream.
@@ -531,6 +600,8 @@ result = (Stream([1, 2, 3])
 
 # [3]
 ```
+
+
 ## `skipwhile`
 
 Create a new stream by skipping elements while a condition is met.
@@ -548,6 +619,8 @@ result = (Stream([1, 2, 2, 3, 5, 3, 2, 3, 5])
 
 # [3, 5, 3, 2, 3, 5]
 ```
+
+
 ## `sorted`
 
 Sort the elements in the stream.
@@ -573,6 +646,8 @@ result = (Stream([(1, 4), (2, 3), (3, 2), (4, 1)])
 
 # [(4, 1), (3, 2), (2, 3), (1, 4)]
 ```
+
+
 ## `takewhile`
 
 Create a new stream with elements while a condition is met.
@@ -591,6 +666,7 @@ result = (Stream([1, 2, 2, 4, 5, 3, 2, 3, 5])
 
 # [1, 2, 2, 4]
 ```
+
 
 
 ## Development setup

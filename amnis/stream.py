@@ -1,7 +1,12 @@
 from collections import defaultdict, deque
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from contextlib import suppress
 from functools import reduce, partial
 from typing import *
+from os import cpu_count
+
+ncpu = cpu_count()
+
 
 Grouper = NamedTuple(
     "Grouper",
@@ -172,6 +177,36 @@ class Stream(Generic[T]):
         """
         return self.apply(partial(map, fn))
 
+    def par_map(self, fn: Callable[[T], U]) -> "Stream[U]":
+        """
+        Parallel version of the `map` method for CPU-bound operations.
+        The results may not be in the same order as the original stream due
+        to the parallel execution.
+
+        **IMPORTANT**: Lambda functions are not allowed as `fn` since they are not easily
+        serializable for parallel execution. Define your mapping function as a regular
+        named function.
+
+        See the documentation for the `map` method for more details.
+
+        ```Python
+        from amnis import Stream
+
+        def times2(x):
+            return x * 2
+
+        result = (Stream([1, 2, 3])
+            .par_map(times2)
+            .collect(list))
+
+        # [2, 4, 6]
+        ```
+        """
+        def _par_map(iterable: Iterable[T]) -> Iterable[U]:
+            with ProcessPoolExecutor(max_workers=ncpu) as executor:
+                yield from executor.map(fn, iterable)
+        return self.apply(_par_map)
+
     def filter(self, fn: Callable[[T], bool]) -> "Stream[T]":
         """
         Filter elements in the stream based on a given condition.
@@ -282,7 +317,9 @@ class Stream(Generic[T]):
         ```Python
         from amnis import Stream
 
-        result = Stream([1, 2, 3, 4, 5]).window(3).collect(list)
+        result = (Stream([1, 2, 3, 4, 5])
+                    .window(3)
+                    .collect(list))
 
         # [
         #     (1, 2, 3),
@@ -290,7 +327,10 @@ class Stream(Generic[T]):
         #     (3, 4, 5),
         # ]
 
-        result = Stream([1, 2, 3, 4, 5]).window(3).map(lambda w: w[0]+w[1]+w[2]).collect(list)
+        result = (Stream([1, 2, 3, 4, 5])
+                    .window(3)
+                    .map(lambda w: w[0]+w[1]+w[2])
+                    .collect(list))
 
         # [6, 9, 12]
         ```

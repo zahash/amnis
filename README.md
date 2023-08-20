@@ -578,6 +578,32 @@ result = Stream([1, 2, 3]).nth(1)
 ```
 
 
+## `par_map`
+
+Parallel version of the `map` method for CPU-bound operations.
+The results may not be in the same order as the original stream due
+to the parallel execution.
+
+**IMPORTANT**: Lambda functions are not allowed as `fn` since they are not easily
+serializable for parallel execution. Define your mapping function as a regular
+named function.
+
+See the documentation for the `map` method for more details.
+
+```Python
+from amnis import Stream
+
+def times2(x):
+    return x * 2
+
+result = (Stream([1, 2, 3])
+    .par_map(times2)
+    .collect(list))
+
+# [2, 4, 6]
+```
+
+
 ## `reduce`
 
 Reduce the elements in the stream to a single value.
@@ -702,7 +728,9 @@ The elements within each window are ordered as they appear in the stream.
 ```Python
 from amnis import Stream
 
-result = Stream([1, 2, 3, 4, 5]).window(3).collect(list)
+result = (Stream([1, 2, 3, 4, 5])
+            .window(3)
+            .collect(list))
 
 # [
 #     (1, 2, 3),
@@ -710,7 +738,10 @@ result = Stream([1, 2, 3, 4, 5]).window(3).collect(list)
 #     (3, 4, 5),
 # ]
 
-result = Stream([1, 2, 3, 4, 5]).window(3).map(lambda w: w[0]+w[1]+w[2]).collect(list)
+result = (Stream([1, 2, 3, 4, 5])
+            .window(3)
+            .map(lambda w: w[0]+w[1]+w[2])
+            .collect(list))
 
 # [6, 9, 12]
 ```

@@ -1,4 +1,4 @@
-# pip3 install setuptools twine
+# pip3 install setuptools twine wheel
 # python3 setup.py sdist bdist_wheel
 # twine upload dist/*
 

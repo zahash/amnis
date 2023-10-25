@@ -1,13 +1,21 @@
 
 <div align="center">
 
-# amnis
+<pre>
+ █████╗ ███╗   ███╗███╗   ██╗██╗███████╗
+██╔══██╗████╗ ████║████╗  ██║██║██╔════╝
+███████║██╔████╔██║██╔██╗ ██║██║███████╗
+██╔══██║██║╚██╔╝██║██║╚██╗██║██║╚════██║
+██║  ██║██║ ╚═╝ ██║██║ ╚████║██║███████║
+╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝╚══════╝
+----------------------------------------
+Java like Streams Api for Python
+</pre>
 
-_Java like Streams Api for Python_
-
+[![PyPI](https://img.shields.io/pypi/v/amnis.svg)](https://pypi.org/project/amnis/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Python package for Java like Streams. Streams are lazy evaluated -- That is, evaluation starts only when a terminal operation is applied
+Streams are lazy evaluated -- That is, evaluation starts only when a terminal operation is applied
 
 </div>
 
